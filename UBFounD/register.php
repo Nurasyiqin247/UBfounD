@@ -1,15 +1,4 @@
 <?php
-
-
-
-echo "<h2>Registration form reached PHP!</h2>";
-
-echo "<h3>Data received:</h3>";
-
-echo "<pre>";
-print_r($_POST);
-echo "</pre>";
-
 // ========================================
 // DATABASE CONNECTION
 // ========================================
@@ -111,13 +100,18 @@ $stmt->bind_param(
 
 if ($stmt->execute()) {
 
-    echo "<h2>Registration Successful!</h2>";
-    echo "Your User ID is: " . $conn->insert_id;
+    echo "<script>
+    alert('Regsitration Successful!Your Account has been created!');
+    window.location.href = 'register.html';
+    </script>";
+    
 
 } else {
 
-    echo "<h2>Registration Failed!</h2>";
-    echo "Error: " . $stmt->error;
+    "<script>
+    alert('Regsitration Successful! Your Account has been created!');
+    window.history.back();
+    </script>";
 
 }
 
