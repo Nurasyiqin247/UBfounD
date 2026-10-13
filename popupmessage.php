@@ -9,7 +9,7 @@
 
 function function_alert($message){
 
-// Dispplay the alert message
+// Display the alert message
 
 
 
