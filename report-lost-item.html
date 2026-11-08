@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Report Lost Item - UbdFind</title>
+
+    <!-- Bootstrap CSS keeps the page responsive. -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Navigation Bar-->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom">
+        <div class="container">
+
+            <a class="navbar-brand fw-bold" href="index.html">
+                UbdFind
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="lostitems.html">Lost Items</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="founditems.html">Found Items</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="myreports.html">My Reports</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <!-- Corrected the Matches link. -->
+                        <a class="nav-link" href="matches.html">Matches</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link notification-bell"
+                            href="notifications.html">🔔</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">Profile</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    
+    <section class="hero-section py-5">
+        <div class="container">
+            <div class="hero-card p-4 p-md-5">
+
+                <h1 class="fw-bold mb-2">Report Lost Item</h1>
+
+                <p class="text-muted mb-0">
+                    Provide details about your lost item to help others
+                    identify and return your item.
+                </p>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Report Form -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body p-4 p-md-5">
+
+                            <!--
+                                POST sends form values to this PHP page.
+                                multipart/form-data is needed for image uploads.
+                            -->
+                            <form 
+                                method="POST"
+                                action="report_lost_item.php"
+                                enctype="multipart/form-data">
+
+                                <!-- Display PHP success or error messages. -->
+                                <?php if ($message !== ""): ?>
+                                    <div class="alert alert-<?php
+                                        echo escapeHtml($messageType);
+                                    ?>" role="alert">
+                                        <?php echo escapeHtml($message); ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <!-- Warn users if they are not logged in. -->
+                                <?php if ($userId === null): ?>
+                                    <div class="alert alert-warning">
+                                        Please log in before submitting a lost-item report.
+                                    </div>
+                                <?php endif; ?>
+
+                                <!-- Item Name -->
+                                <div class="mb-4">
+                                    <label
+                                        for="itemName"
+                                        class="form-label fw-semibold">
+                                        Item Name
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="itemName"
+                                        name="itemName"
+                                        placeholder="e.g. Black wallet"
+                                        maxlength="255"
+                                        required>
+                                </div>
+
+                                <!-- Category options are loaded from CATEGORY. -->
+                                <div class="mb-4">
+                                    <label
+                                        for="category"
+                                        class="form-label fw-semibold">
+                                        Category
+                                    </label>
+
+                                    <select
+                                        class="form-select"
+                                        id="category"
+                                        name="category"
+                                        required>
+
+                                        <option value="" selected disabled>
+                                            Select a category
+                                        </option>
+
+                                        <?php foreach ($categories as $category): ?>
+                                            <option value="<?php
+                                                echo escapeHtml($category["CategoryID"]);
+                                            ?>">
+                                                <?php echo escapeHtml(
+                                                    $category["CategoryName"]
+                                                ); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+
+                                    </select>
+                                </div>
+
+                                <!-- Item description. -->
+                                <div class="mb-4">
+                                    <label
+                                        for="description"
+                                        class="form-label fw-semibold">
+                                        Description
+                                    </label>
+
+                                    <textarea
+                                        class="form-control"
+                                        id="description"
+                                        name="description"
+                                        rows="4"
+                                        placeholder="Describe the item, including its colour, brand, model, markings, size or other identifying details."
+                                        required></textarea>
+                                </div>
+
+                                <!-- Date the item was lost. -->
+                                <div class="mb-4">
+                                    <label
+                                        for="dateLost"
+                                        class="form-label fw-semibold">
+                                        Date Lost
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        id="dateLost"
+                                        name="dateLost"
+                                        max="<?php echo date('Y-m-d'); ?>"
+                                        required>
+                                </div>
+
+                                <!-- Last known location of the item. -->
+                                <div class="mb-4">
+                                    <label
+                                        for="location"
+                                        class="form-label fw-semibold">
+                                        Last Known Location
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="location"
+                                        name="location"
+                                        placeholder="e.g. UBD Library"
+                                        maxlength="255"
+                                        required>
+
+                                    <div class="form-text">
+                                        Enter the place where you last remember
+                                        having the item before it was lost.
+                                    </div>
+                                </div>
+
+                                <!-- Optional image upload. -->
+                                <div class="mb-4">
+                                    <label
+                                        for="itemImage"
+                                        class="form-label fw-semibold">
+                                        Upload Image
+                                    </label>
+
+                                    <input
+                                        type="file"
+                                        class="form-control"
+                                        id="itemImage"
+                                        name="itemImage"
+                                        accept="image/jpeg,image/png,image/webp">
+
+                                    <div class="form-text">
+                                        Upload a JPG, PNG or WebP photo
+                                        (maximum 5 MB).
+                                    </div>
+                                </div>
+
+                                <!--
+                                    Contact Information now comes from USER.
+                                    It is displayed for reference and is not
+                                    submitted as a separate report field.
+                                -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">
+                                        Registered Contact Information
+                                    </label>
+
+                                    <div class="form-control bg-light">
+                                        <strong>Email:</strong>
+                                        <?php
+                                        echo $userEmail !== ""
+                                            ? escapeHtml($userEmail)
+                                            : "No email registered";
+                                        ?>
+
+                                        <br>
+
+                                        <strong>Phone:</strong>
+                                        <?php
+                                        echo $userPhone !== ""
+                                            ? escapeHtml($userPhone)
+                                            : "No phone number registered";
+                                        ?>
+                                    </div>
+
+                                    <div class="form-text">
+                                        These details come from your registered
+                                        UbdFind account.
+                                    </div>
+                                </div>
+
+                                <!-- Additional notes about the lost item. -->
+                                <div class="mb-4">
+                                    <label
+                                        for="notes"
+                                        class="form-label fw-semibold">
+                                        Additional Notes
+                                    </label>
+
+                                    <textarea
+                                        class="form-control"
+                                        id="notes"
+                                        name="notes"
+                                        rows="3"
+                                        placeholder="Add any additional information that may help someone identify your item."></textarea>
+                                </div>
+
+                                <!-- Form buttons. -->
+                                <div class="d-flex flex-column flex-sm-row gap-2">
+
+                                    <a
+                                        href="lostitems.html"
+                                        class="btn btn-outline-secondary px-4">
+                                        Cancel
+                                    </a>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary px-4"
+                                        <?php echo $userId === null ? "disabled" : ""; ?>>
+                                        Submit Lost Item Report
+                                    </button>
+
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer class="border-top py-4 mt-3">
+        <div class="container text-center">
+            <p class="text-muted mb-0">
+                © 2026 UbdFind. Helping UBD students find what they've lost.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript for the responsive navigation bar. -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+</html>
+
+<?php
+// Close the database connection when the page has finished processing.
+$conn->close();
+?>
