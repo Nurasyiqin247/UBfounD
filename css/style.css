@@ -249,9 +249,33 @@ footer {
 
 /* Navigation logo */
 .navbar-logo {
-    height: 100px; 
+    height: 75px; 
     width: auto;
-    max-height: 70px;
+    max-width: 200px;
     object-fit: contain;
     display: block;
+}
+
+/*Navbar alignment*/
+.navbar{
+min-height: 99px;
+}
+
+.navbar-brand{
+display: flex;
+align-items: center; 
+}
+
+/*Mobile version*/
+@media (max-width: 768px) {
+    .navbar-logo {
+        height: 60px;
+        width: auto;
+        max-width: 160px;
+        object-fit: contain;
+    }
+
+    .navbar{
+        min-height: 75px;
+    }
 }
