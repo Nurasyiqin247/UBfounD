@@ -370,7 +370,9 @@ function escapeHtml($value) {
         <div class="container">
 
             <a class="navbar-brand fw-bold" href="index.html">
-                UbdFind
+             <img src="UBfounD\assets\images\ubfound-logo-version3a.png" 
+                alt="UBfounD Logo" 
+                class="navbar-logo">
             </a>
 
             <button
