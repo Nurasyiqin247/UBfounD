@@ -101,7 +101,7 @@ $stmt->close();
 
             <!-- Website name -->
             <a class="navbar-brand fw-bold" href="index.html">
-                <img src="UBfounD\assets\images\ubfound-logo-version3a.png" 
+                <img src="\UBfounD\assets\images\ubfound-logo-version3a.png" 
                     alt="UBfounD Logo" 
                     class="navbar-logo"
                 >
