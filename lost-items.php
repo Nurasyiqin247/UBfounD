@@ -451,7 +451,7 @@ try {
         <div class="container text-center">
 
             <p class="fw-bold mb-1">
-                UbdFind
+                UBfounD
             </p>
 
             <p class="small mb-1">
@@ -465,7 +465,7 @@ try {
             <p class="small mb-1">
                 Email:
                 <a href="mailto:lostandfound@university.edu">
-                    UbdFind@ubd.edu.bn
+                    ubfound@ubd.edu.bn
                 </a>
             </p>
 
@@ -474,7 +474,7 @@ try {
             </p>
 
             <p class="small mb-0">
-                &copy; 2026 UbdFind
+                &copy; 2026 UBfound
             </p>
 
         </div>

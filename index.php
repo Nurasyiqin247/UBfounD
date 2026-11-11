@@ -586,10 +586,11 @@ foreach ($lostReports as $lost) {
             </p>
 
 
-            <!-- Copyright -->
+             <!-- Copyright -->
             <p class="small mb-0">
-                © 2026 UBfounD. Helping UBD students find what they've lost.
+                © 2026 UBfounD. Helping UBD students return found items.
             </p>
+
 
 
         </div>

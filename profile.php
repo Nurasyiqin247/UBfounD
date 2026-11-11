@@ -553,7 +553,7 @@ function safeOutput($value) {
         <div class="container text-center">
 
             <p class="fw-bold mb-1">
-                UBfounD - Campus Lost & Found System
+                UBfounD 
             </p>
 
             <p class="small mb-1">
@@ -567,7 +567,7 @@ function safeOutput($value) {
             <p class="small mb-1">
                 Email:
                 <a href="mailto:lostandfound@ubd.edu.bn">
-                    Ubfound@ubd.edu.bn
+                    ubfound@ubd.edu.bn
                 </a>
             </p>
 

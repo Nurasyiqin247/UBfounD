@@ -714,12 +714,17 @@ function escapeHtml($value) {
     </section>
 
     
+    <!-- Footer -->
     <footer class="border-top py-4 mt-3">
+
         <div class="container text-center">
+
             <p class="text-muted mb-0">
-                © 2026 UBfounD. Helping UBD students find what they've lost.
+                © 2026 UBfounD. Helping UBD students return found items.
             </p>
+
         </div>
+
     </footer>
 
     <!-- Bootstrap JavaScript for the responsive navigation bar. -->

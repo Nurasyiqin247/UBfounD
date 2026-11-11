@@ -761,7 +761,7 @@ $conn->close();
         <div class="container text-center">
 
             <p class="text-muted mb-0">
-                © 2026 UbdFind. Helping UBD students return found items.
+                © 2026 UBfounD. Helping UBD students return found items.
             </p>
 
         </div>
