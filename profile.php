@@ -530,23 +530,23 @@ function safeOutput($value) {
                                 <span class="badge bg-success">
                                     Registered
                                 </span>
-                                
+
                             </div>
                             <hr class="my-4">
                             <!-- ====================LOG OUT BUTTON ==================== -->
     
-                                    <form method="POST" action="logout.php"
+                                <form method="POST" action="logout.php"
                                     onsubmit="return confirm('Are you sure you want to log out?');">
 
                                     <input
-                                    type="hidden"
-                                    name="csrf_token"
-                                    value="<?php echo safeOutput($_SESSION['csrf_token']); ?>"
-                                    >                   
+                                        type="hidden"
+                                            name="csrf_token"
+                                                value="<?php echo safeOutput($_SESSION['csrf_token']); ?>"
+                                        >                   
 
                                     <button type="submit" class="btn btn-danger">
-                                    Log Out
-                                    </button>
+                                        Log Out
+                                 </button>
 
                             </form>
 
