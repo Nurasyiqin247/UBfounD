@@ -574,7 +574,7 @@ foreach ($lostReports as $lost) {
                 Email:
 
                 <a href="mailto:lostandfound@university.edu">
-                    Ubfound@ubd.edu.bn
+                    <u>ubfound@ubd.edu.bn</u>
                 </a>
 
             </p>
