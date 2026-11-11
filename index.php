@@ -42,14 +42,15 @@ $foundresult = $conn->query($foundQuery);
 $totalFound = $foundresult->fetch_assoc()['total_found'];
 
 $recentQuery = "
-SELECT r.ReportID, r.ReportType, r.DateReported, r.Location, p.ItemName, c.CategoryName
-(
-    SELECT ii.ImageLink
-    FROM item_image AS ii
-    WHERE ii.ItemProfileID = p.ItemProfileID
-    ORDER BY ii.DateUpload DESC
-    LIMIT 1
-) AS ImageLink
+SELECT 
+r.ReportID, 
+r.ReportType, 
+r.DateReported, 
+r.Location,
+p.ItemName, 
+c.CategoryName,
+ii.ImageLink
+
 FROM item_report AS r
 
 INNER JOIN item_profile AS p 
@@ -58,7 +59,13 @@ ON r.ItemProfileID = p.ItemProfileID
 LEFT JOIN category AS c
 ON p.CategoryID = c.CategoryID
 
-ORDER BY r.DateReported DESC
+LEFT JOIN item_image AS ii
+ON p.ItemProfileID = ii.ItemProfileID
+
+ORDER BY 
+r.DateReported DESC,
+r.ReportID DESC,
+ii.DateUpload DESC
 
 LIMIT 3
 ";
