@@ -450,7 +450,7 @@ $stmt->close();
             <p class="small mb-1">
                 Email:
                 <a href="mailto:lostandfound@university.edu">
-                    UbfounD@ubd.edu.bn
+                    <u>ubfound@ubd.edu.bn</u>
                 </a>
             </p>
 

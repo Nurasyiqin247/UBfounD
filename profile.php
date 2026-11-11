@@ -542,6 +542,25 @@ function safeOutput($value) {
             </div>
 
         </div>
+            <!-- ====================LOG OUT BUTTON ==================== -->
+        <div class="container mt-4">
+          <hr>
+
+            <form method="POST" action="logout.php"
+                onsubmit="return confirm('Are you sure you want to log out?');">
+
+                <input
+                 type="hidden"
+                 name="csrf_token"
+                value="<?php echo safeOutput($_SESSION['csrf_token']); ?>"
+                >                   
+
+                    <button type="submit" class="btn btn-danger">
+                            Log Out
+                    </button>
+
+            </form>
+        </div>
 
     </section>
 

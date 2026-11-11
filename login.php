@@ -114,7 +114,7 @@ if ($user && isset($user["Password"])
     $_SESSION["user_email"] = $user[$emailColumn] ?? "";
     $_SESSION["user_role"] = $user["Role"] ?? "Student";
 
-    header("Location: index.html");
+    header("Location: index.php");
     exit;
 }
 
