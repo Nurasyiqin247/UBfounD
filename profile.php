@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["UserID"])) {
-    header("Location: login.php");
+if (!isset($_SESSION["user_id"])) {
+    header("Location: login.html");
     exit();
 }
 
@@ -12,7 +12,8 @@ $conn = new mysqli(
     "root", 
     "1234", 
     "lostandfound", 
-    4406);
+    4406
+    );
 
 // Check database connection
 if ($conn->connect_error) {
@@ -23,7 +24,7 @@ if ($conn->connect_error) {
 $conn->set_charset("utf8mb4");
 
 // Get the logged-in user's ID
-$userID = $_SESSION["UserID"];
+$userID = $_SESSION["user_id"];
 
 // Create a CSRF token for form security
 if (empty($_SESSION["csrf_token"])) {
@@ -521,7 +522,7 @@ function safeOutput($value) {
                                     <strong>Account Status</strong>
 
                                     <p class="text-muted small mb-0">
-                                        Your account information is registered in UbdFind.
+                                        Your account information is registered in UBfounD.
                                     </p>
 
                                 </div>

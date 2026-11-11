@@ -391,20 +391,20 @@ function escapeHtml($value) {
                 <ul class="navbar-nav ms-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="lostitems.html">Lost Items</a>
+                        <a class="nav-link" href="lost-items.php">Lost Items</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="founditems.html">Found Items</a>
+                        <a class="nav-link" href="found-items.php">Found Items</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="myreports.html">My Reports</a>
+                        <a class="nav-link" href="my-reports.php">My Reports</a>
                     </li>
 
                     <li class="nav-item">
                         <!-- Corrected the Matches link. -->
-                        <a class="nav-link" href="matches.html">Matches</a>
+                        <a class="nav-link" href="matches.php">Matches</a>
                     </li>
 
                     <li class="nav-item">
@@ -414,7 +414,7 @@ function escapeHtml($value) {
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.html">Profile</a>
+                        <a class="nav-link" href="profile.php">Profile</a>
                     </li>
 
                 </ul>
