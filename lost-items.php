@@ -107,8 +107,8 @@ try {
         <div class="container">
 
             <!-- Website name -->
-            <a class="navbar-brand fw-bold" href="index.html">
-                <img src="\UBfounD\assets\images\ubfound-logo-version3a.png" 
+            <a class="navbar-brand fw-bold" href="index.php">
+                <img src="\UBfounD\assets\images\ubfound-logo-version3c.png" 
                 alt="UBfounD Logo" 
                 class="navbar-logo">
                 </img>

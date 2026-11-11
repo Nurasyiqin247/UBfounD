@@ -211,7 +211,7 @@ foreach ($lostReports as $lost) {
         <div class="container">
             <!-- Keeps the content from becoming too wide -->
 
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="index.php">
                 <img src="\UBfounD\assets\images\ubfound-logo-version3c.png" 
                 alt="UBfounD Logo" 
                 class="navbar-logo">
@@ -240,7 +240,7 @@ foreach ($lostReports as $lost) {
                     <!-- ms-auto pushes the links to the right -->
 
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.html">
+                        <a class="nav-link active" href="index.php">
                             Home
                         </a>
                     </li>
@@ -258,26 +258,26 @@ foreach ($lostReports as $lost) {
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="my-reports.html">
+                        <a class="nav-link" href="my-reports.php">
                             My Reports
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="matches.html">
+                        <a class="nav-link" href="matches.php">
                             Matches
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="notifications.html">
+                        <a class="nav-link" href="notifications.php">
                             🔔
         
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.html">
+                        <a class="nav-link" href="profile.php">
                             Profile
                         </a>
                     </li>

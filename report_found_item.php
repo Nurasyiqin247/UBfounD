@@ -338,8 +338,8 @@ $conn->close();
     <nav class="navbar navbar-expand-lg bg-white border-bottom">
         <div class="container">
 
-            <a class="navbar-brand fw-bold" href="index.html">
-             <img src="\UBfounD\assets\images\ubfound-logo-version3a.png" 
+            <a class="navbar-brand fw-bold" href="index.php">
+             <img src="\UBfounD\assets\images\ubfound-logo-version3c.png" 
                 alt="UBfounD Logo" 
                 class="navbar-logo">
             </a>
