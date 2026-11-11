@@ -506,7 +506,7 @@ foreach ($lostReports as $lost) {
                             </h5>
 
                             <p class="card-text text-muted">
-                                <?= e($report['ReportLocation']) ?>
+                                <?= e($report['Location']) ?>
                             </p>
 
                                 <P class="small text-muted">
@@ -539,78 +539,6 @@ foreach ($lostReports as $lost) {
                     <?php endif; ?>
 
                 <!-- ITEM 2 -->
-
-                <div class="col-md-4">
-
-                    <div class="card item-card h-100">
-
-                        <div class="item-image">
-                            👛
-                        </div>
-
-                        <div class="card-body">
-
-                            <span class="badge text-bg-success mb-2">
-                                FOUND
-                            </span>
-
-                            <h5 class="card-title">
-                                Brown Wallet
-                            </h5>
-
-                            <p class="card-text text-muted">
-                                Found near the Cafeteria.
-                            </p>
-
-                            <a href="item-details.php" class="btn btn-sm btn-outline-primary">
-                                View Details
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- ITEM 3 -->
-
-                <div class="col-md-4">
-
-                    <div class="card item-card h-100">
-
-                        <div class="item-image">
-                            🔑
-                        </div>
-
-                        <div class="card-body">
-
-                            <span class="badge text-bg-danger mb-2">
-                                LOST
-                            </span>
-
-                            <h5 class="card-title">
-                                Key Set
-                            </h5>
-
-                            <p class="card-text text-muted">
-                                Reported near Block 8.
-                            </p>
-
-                            <a href="item-details.php" class="btn btn-sm btn-outline-primary">
-                                View Details
-
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
 
     </section>
 
