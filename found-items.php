@@ -100,8 +100,8 @@ $stmt->close();
         <div class="container">
 
             <!-- Website name -->
-            <a class="navbar-brand fw-bold" href="index.html">
-                <img src="\UBfounD\assets\images\ubfound-logo-version3a.png" 
+            <a class="navbar-brand fw-bold" href="index.php">
+                <img src="\UBfounD\assets\images\ubfound-logo-version3d.png" 
                     alt="UBfounD Logo" 
                     class="navbar-logo"
                 >
@@ -126,7 +126,7 @@ $stmt->close();
                 <ul class="navbar-nav ms-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="index.php">
                             Home
                         </a>
                     </li>
@@ -148,13 +148,13 @@ $stmt->close();
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="my-reports.html">
+                        <a class="nav-link" href="my-reports.php">
                             My Reports
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="matches.html">
+                        <a class="nav-link" href="matches.php">
                             Matches
                         </a>
                     </li>
@@ -162,7 +162,7 @@ $stmt->close();
                     <li class="nav-item">
                         <a
                             class="nav-link notification-bell"
-                            href="notifications.html"
+                            href="notifications.php"
                             aria-label="Notifications"
                         >
                             🔔
@@ -170,7 +170,7 @@ $stmt->close();
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.html">
+                        <a class="nav-link" href="profile.php">
                             Profile
                         </a>
                     </li>
