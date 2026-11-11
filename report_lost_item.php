@@ -41,7 +41,7 @@ while ($column = $columnsResult->fetch_assoc()) {
 
 $emailColumn = null;
 
-foreach (["Email", "Emaill"] as $candidate) {
+foreach (["Email", "Email"] as $candidate) {
     if (in_array($candidate, $userColumns, true)) {
         $emailColumn = $candidate;
         break;
@@ -667,7 +667,7 @@ function escapeHtml($value) {
 
                                     <div class="form-text">
                                         These details come from your registered
-                                        UbdFind account.
+                                        UBfounD account.
                                     </div>
                                 </div>
 

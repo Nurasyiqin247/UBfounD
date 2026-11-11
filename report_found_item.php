@@ -62,7 +62,7 @@ $user = $userResult->fetch_assoc();
 $stmt->close();
 
 if ($user) {
-    $userEmail = $user["Emaill"] ?? "";
+    $userEmail = $user["Email"] ?? "";
 
     // Check common possible phone column names.
     // Change this to your actual phone column if necessary.
