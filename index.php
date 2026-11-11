@@ -212,7 +212,7 @@ foreach ($lostReports as $lost) {
             <!-- Keeps the content from becoming too wide -->
 
             <a class="navbar-brand" href="index.php">
-                <img src="\UBfounD\assets\images\ubfound-logo-version3c.png" 
+                <img src="\UBfounD\assets\images\ubfound-logo-version3d.png" 
                 alt="UBfounD Logo" 
                 class="navbar-logo">
                 
