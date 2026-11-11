@@ -133,7 +133,7 @@ try {
                 <ul class="navbar-nav ms-auto">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="index.html">
+                        <a class="nav-link" href="index.php">
                             Home
                         </a>
                     </li>
@@ -177,7 +177,7 @@ try {
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.html">
+                        <a class="nav-link" href="profile.php">
                             Profile
                         </a>
                     </li>
