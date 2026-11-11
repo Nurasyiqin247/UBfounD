@@ -13,7 +13,7 @@ if ($conn->connect_error) {
     exit("Database connection failed. Please try again later.");
 }
 
-function e(value){
+function e($value){
     return htmlspecialchars((string) ($value ??''),
     ENT_QUOTES, 
     'UTF-8'
