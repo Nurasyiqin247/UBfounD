@@ -1,4 +1,5 @@
 <?php
+// Connect to the database
 $conn = new mysqli(
     "localhost",
     "root",
@@ -7,12 +8,14 @@ $conn = new mysqli(
     4406
 );
 
+// Check database connection
 if ($conn->connect_error) {
     error_log("Database connection failed: " . $conn->connect_error);
     http_response_code(500);
     exit("Database connection failed. Please try again later.");
 }
 
+// Set the character set to UTF-8
 function e($value){
     return htmlspecialchars((string) ($value ??''),
     ENT_QUOTES, 
