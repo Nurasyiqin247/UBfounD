@@ -134,7 +134,7 @@ $stmt->close();
 // Check whether the user exists
 if (!$user) {
     session_destroy();
-    header("Location: login.php");
+    header("Location: login.html");
     exit();
 }
 
@@ -143,7 +143,7 @@ if (!$user) {
 // ==========================================
 
 $sql = "SELECT COUNT(*) AS total
-        FROM `ITEM REPORT`
+        FROM `item_report`
         WHERE `UserID` = ?";
 
 $stmt = $conn->prepare($sql);
@@ -165,7 +165,7 @@ $stmt->close();
 // when an item has been successfully returned.
 
 $sql = "SELECT COUNT(*) AS total
-        FROM `ITEM REPORT`
+        FROM `item_report`
         WHERE `UserID` = ?
         AND `Status` = 'Returned'";
 
@@ -217,7 +217,7 @@ function safeOutput($value) {
 
         <div class="container">
 
-            <a class="navbar-brand fw-bold" href="index.html">
+            <a class="navbar-brand fw-bold" href="index.php">
                 <img src="\UBfounD\assets\images\ubfound-logo-version3d.png" 
                 alt="UBfounD Logo" 
                 class="navbar-logo">
