@@ -339,7 +339,7 @@ $conn->close();
         <div class="container">
 
             <a class="navbar-brand fw-bold" href="index.php">
-             <img src="\UBfounD\assets\images\ubfound-logo-version3c.png" 
+             <img src="\UBfounD\assets\images\ubfound-logo-version3d.png" 
                 alt="UBfounD Logo" 
                 class="navbar-logo">
             </a>

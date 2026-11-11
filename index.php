@@ -545,33 +545,55 @@ foreach ($lostReports as $lost) {
 
     <!-- ==================== FOOTER ==================== -->
 
-    <footer class="border-top py-2">
+    <footer class="py-2">
 
         <div class="container text-center">
 
-            <p class="mb-1 fw-semibold">
-                UBFounD
+
+            <!-- Website name -->
+            <p class="fw-bold mb-1">
+                UBfounD
             </p>
 
-            <!-- Contact information -->
+
+            <!-- Website description -->
+            <p class="small mb-1">
+                Campus Lost & Found System
+            </p>
+
+
+            <!-- Help information -->
             <p class="small mb-1">
                 Need help?
             </p>
 
+
+            <!-- Email -->
             <p class="small mb-1">
+
                 Email:
-                <a href="mailto:UBFounD@ubd.edu.bn">
-                    UBFounD@ubd.edu.bn
+
+                <a href="mailto:lostandfound@university.edu">
+                    Ubfound@ubd.edu.bn
                 </a>
+
             </p>
 
-            <p class="small mb-3">
+
+            <!-- Phone -->
+            <p class="small mb-2">
                 Phone: +673 246 XXXX
             </p>
 
+
+            <!-- Copyright -->
+            <p class="small mb-0">
+                © 2026 UBfounD. Helping UBD students find what they've lost.
+            </p>
+
+
         </div>
 
-    </footer>
 
 
     <!-- Bootstrap JavaScript -->

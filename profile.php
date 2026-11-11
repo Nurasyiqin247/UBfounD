@@ -292,7 +292,7 @@ function safeOutput($value) {
             </h1>
 
             <p class="text-muted">
-                View and manage your UbdFind account information.
+                View and manage your UBfounD account information.
             </p>
 
         </div>
@@ -553,7 +553,7 @@ function safeOutput($value) {
         <div class="container text-center">
 
             <p class="fw-bold mb-1">
-                UbdFind
+                UBfounD - Campus Lost & Found System
             </p>
 
             <p class="small mb-1">
@@ -567,7 +567,7 @@ function safeOutput($value) {
             <p class="small mb-1">
                 Email:
                 <a href="mailto:lostandfound@ubd.edu.bn">
-                    UbdFind@ubd.edu.bn
+                    Ubfound@ubd.edu.bn
                 </a>
             </p>
 
@@ -576,7 +576,7 @@ function safeOutput($value) {
             </p>
 
             <p class="small mb-0">
-                © 2026 UbdFind
+                © 2026 UBfounD
             </p>
 
         </div>

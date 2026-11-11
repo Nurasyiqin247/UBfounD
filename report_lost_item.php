@@ -370,7 +370,7 @@ function escapeHtml($value) {
         <div class="container">
 
             <a class="navbar-brand fw-bold" href="index.php">
-             <img src="\UBfounD\assets\images\ubfound-logo-version3c.png" 
+             <img src="\UBfounD\assets\images\ubfound-logo-version3d.png" 
                 alt="UBfounD Logo" 
                 class="navbar-logo">
             </a>
@@ -717,7 +717,7 @@ function escapeHtml($value) {
     <footer class="border-top py-4 mt-3">
         <div class="container text-center">
             <p class="text-muted mb-0">
-                © 2026 UbdFind. Helping UBD students find what they've lost.
+                © 2026 UBfounD. Helping UBD students find what they've lost.
             </p>
         </div>
     </footer>
