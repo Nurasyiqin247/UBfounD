@@ -80,40 +80,210 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" &&
 
             $stmt = $conn->prepare($sql);
 
-            if ($stmt) {
+            if (!$stmt) {
+                unlink($destination);
 
-                $stmt->bind_param(
-                    "ssssi",
-                    $name,
-                    $studentID,
-                    $email,
-                    $phone,
-                    $userID
+                $message = "Database preparation failed.";
+                $messageType = "danger";
+
+            } 
+                else {
+
+                $stmt->bind_param("ssssi",
+                $name,
+                $studentID, 
+                $email,
+                $phone,
+                $filePath, 
+                $userID
                 );
 
                 if ($stmt->execute()) {
-                    $message = "Your profile has been updated successfully!";
+
+                    $message = "Profile picture updated successfully!";
                     $messageType = "success";
+
+                    // Delete the previous picture
+                    if (
+                        !empty($oldPicture) &&
+                        strpos($oldPicture, "uploads/profile/") === 0
+                    ) {
+                        $oldFile = __DIR__ . "/" . $oldPicture;
+
+                        if (is_file($oldFile)) {
+                            unlink($oldFile);
+                        }
+                    }
+
                 } else {
-                    $message = "Unable to update your profile. Please try again.";
+
+                    unlink($destination);
+
+                    $message = "Unable to update your profile picture.";
                     $messageType = "danger";
                 }
 
                 $stmt->close();
-
-            } else {
-                $message = "Database error. Please try again.";
-                $messageType = "danger";
             }
         }
     }
 }
 
 // ==========================================
+// UPLOAD PROFILE PICTURE
+// ==========================================
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" &&
+    isset($_POST["upload_picture"])) {
+
+    // Verify CSRF token
+    if (
+        !isset($_POST["csrf_token"]) ||
+        !hash_equals($_SESSION["csrf_token"], $_POST["csrf_token"])
+    ) {
+
+        $message = "Invalid request. Please try again.";
+        $messageType = "danger";
+
+    } elseif (
+        !isset($_FILES["profile_picture"]) ||
+        $_FILES["profile_picture"]["error"] !== UPLOAD_ERR_OK
+    ) {
+
+        $message = "Please select a picture to upload.";
+        $messageType = "danger";
+
+    } else {
+
+        $file = $_FILES["profile_picture"];
+
+        // Maximum upload size: 2 MB
+        $maxSize = 2 * 1024 * 1024;
+
+        // Check file size
+        if ($file["size"] > $maxSize) {
+
+            $message = "Your picture must be smaller than 2 MB.";
+            $messageType = "danger";
+
+        } else {
+
+            // Check the actual image type
+            $finfo = new finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->file($file["tmp_name"]);
+
+            $allowedTypes = [
+                "image/jpeg" => "jpg",
+                "image/png"  => "png"
+            ];
+
+            if (!isset($allowedTypes[$mimeType])) {
+
+                $message = "Only JPG and PNG images are allowed.";
+                $messageType = "danger";
+
+            } elseif (getimagesize($file["tmp_name"]) === false) {
+
+                $message = "The uploaded file is not a valid image.";
+                $messageType = "danger";
+
+            } else {
+
+                // Create the upload directory if necessary
+                $uploadDirectory = __DIR__ . "/uploads/profile/";
+
+                if (!is_dir($uploadDirectory)) {
+                    mkdir($uploadDirectory, 0755, true);
+                }
+
+                // Generate a unique filename
+                $extension = $allowedTypes[$mimeType];
+
+                $fileName = "user_" . $userID . "_" .
+                            bin2hex(random_bytes(8)) . "." . $extension;
+
+                $filePath = "uploads/profile/" . $fileName;
+
+                $destination = $uploadDirectory . $fileName;
+
+                // Move the uploaded picture
+                if (move_uploaded_file($file["tmp_name"], $destination)) {
+
+                    // Get the previous profile picture
+                   $oldStmt = $conn->prepare(
+                    "SELECT ProfilePicture FROM `USER` WHERE UserID = ?"
+                    );
+
+                    $oldStmt->bind_param("i", $userID);
+                    $oldStmt->execute();
+
+                    $oldResult = $oldStmt->get_result();
+                    $oldData = $oldResult->fetch_assoc();
+
+                    $oldPicture = $oldData["ProfilePicture"] ?? "";
+
+                    $oldStmt->close();
+
+                    // Save the new picture path in the database
+                   $sql = "UPDATE `USER`
+                           SET `ProfilePicture` = ?
+                           WHERE `UserID` = ?";
+
+                    $stmt = $conn->prepare($sql);
+
+                    if (!$stmt) {
+
+                    unlink($destination);
+
+                    $message = "Database preparation failed.";
+                    $messageType = "danger";
+
+                    } else {
+
+                    $stmt->bind_param("si", $filePath, $userID);
+
+                    if ($stmt->execute()) {
+
+                        $message = "Profile picture updated successfully!";
+                        $messageType = "success";
+
+                        // Remove the previous uploaded picture
+                        if (
+                            !empty($oldPicture) &&
+                            strpos($oldPicture, "uploads/profile/") === 0
+                        ) {
+
+                            $oldFile = __DIR__ . "/" . $oldPicture;
+
+                            if (is_file($oldFile)) {
+                                unlink($oldFile);
+                            }
+                        }
+
+                    } else {
+
+                            unlink($destination);
+
+                            $message = "Unable to update your profile picture.";
+                            $messageType = "danger";
+                        }
+                    }
+                         $stmt->close();
+                        
+
+                } 
+            }
+        }
+    }
+}
+
+
+// ==========================================
 // RETRIEVE USER PROFILE INFORMATION
 // ==========================================
 
-$sql = "SELECT `Name`, `StudentID`, `Email`, `Phone`
+$sql = "SELECT `Name`, `StudentID`, `Email`, `Phone`,
+        `ProfilePicture`
         FROM `USER`
         WHERE `UserID` = ?";
 
@@ -334,11 +504,71 @@ function safeOutput($value) {
 
                         <div class="card-body text-center p-4">
 
-                            <!-- Profile icon -->
-                            <div class="fs-1 mb-3">
-                                👤
-                            </div>
+                            
+                            <!-- Profile Picture -->
+                                    <div class="mb-3">
 
+                                      <?php if (!empty($user["ProfilePicture"]) &&
+                                        file_exists(__DIR__ . "/" . $user["ProfilePicture"])): ?>
+
+                                            <img
+                                                src="<?php echo safeOutput($user["ProfilePicture"]); ?>"
+                                                alt="Profile Picture"
+                                                class="rounded-circle"
+                                                width="130"
+                                                height="130"
+                                                style="object-fit: cover;"
+                                            >
+
+                                                    <?php else: ?>
+
+                                                            <div
+                                                                class="rounded-circle bg-light d-inline-flex
+                                                                    align-items-center justify-content-center"
+                                                                style="width: 130px; height: 130px; font-size: 65px;"
+                                                            >
+                                                                👤
+                                                            </div>
+                                                  <?php endif; ?>
+
+                                   </div>
+                                   <!-- Change Profile Picture Form -->
+                                    <form method="POST"
+                                        action="profile.php"
+                                        enctype="multipart/form-data">
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="<?php echo safeOutput($_SESSION["csrf_token"]); ?>"
+                                    >
+
+                                    <div class="mb-2">
+
+                                        <input
+                                            type="file"
+                                            name="profile_picture"
+                                            class="form-control form-control-sm"
+                                            accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                                            required
+                                        >
+
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        name="upload_picture"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
+                                        <i class="bi bi-camera"></i>
+                                        Upload Picture
+                                    </button>
+
+                                    <p class="text-muted small mt-2">
+                                        JPG or PNG only. Maximum size: 2 MB.
+                                    </p>
+
+                                </form>
                             <!-- Display user's name -->
                             <h4 class="fw-bold">
                                 <?php echo safeOutput($user["Name"]); ?>

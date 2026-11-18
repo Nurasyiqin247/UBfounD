@@ -161,7 +161,7 @@ try {
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="matches.html">
+                        <a class="nav-link" href="matches.php">
                             Matches
                         </a>
                     </li>
@@ -169,7 +169,7 @@ try {
                     <li class="nav-item">
                         <a
                             class="nav-link notification-bell"
-                            href="notifications.html"
+                            href="notifications.php"
                             aria-label="Notifications"
                         >
                             🔔

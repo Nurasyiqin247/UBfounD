@@ -1,22 +1,33 @@
 <?php
 session_start();
 
+
 // Check whether the user is logged in
-if (!isset($_SESSION["UserID"])) {
-    header("Location: login.php");
+if (!isset($_SESSION["user_id"])) {
+    header("Location: login.html");
     exit();
 }
 
 // Connect to the database
-$conn = new mysqli("localhost", "root", "1234", "lostandfound", 4406);
+$conn = new mysqli(
+    "localhost", 
+    "root", 
+    "1234", 
+    "lostandfound", 
+    4406);
 
 // Check database connection
 if ($conn->connect_error) {
     die("Database connection failed: " . $conn->connect_error);
 }
 
+// Set character encoding
+$conn->set_charset("utf8mb4");
+
 // Get the logged-in user's ID
-$userID = $_SESSION["UserID"];
+$userID = $_SESSION["user_id"];
+
+
 
 
 /* ==========================================
@@ -26,7 +37,6 @@ $userID = $_SESSION["UserID"];
 // Calculate similarity between two text values
 function textSimilarity($value1, $value2) {
 
-    // Convert values to lowercase and remove extra spaces
     $value1 = strtolower(trim((string)$value1));
     $value2 = strtolower(trim((string)$value2));
 
@@ -35,24 +45,41 @@ function textSimilarity($value1, $value2) {
         return 0;
     }
 
-    // Check whether both values are exactly the same
+    // Exact match
     if ($value1 === $value2) {
         return 100;
     }
 
-    // Calculate similarity using similar_text()
+    // Remove common descriptive words
+    $removeWords = [
+        "the", "a", "an", "colour", "color",
+        "item", "with"
+    ];
+
+    $words1 = explode(" ", $value1);
+    $words2 = explode(" ", $value2);
+
+    $words1 = array_diff($words1, $removeWords);
+    $words2 = array_diff($words2, $removeWords);
+
+    $words1 = array_values(array_filter($words1));
+    $words2 = array_values(array_filter($words2));
+
+    // Check whether the descriptions share words
+    $commonWords = array_intersect($words1, $words2);
+
+    $allWords = array_unique(array_merge($words1, $words2));
+
+    $wordScore = count($allWords) > 0
+        ? (count($commonWords) / count($allWords)) * 100
+        : 0;
+
+    // Calculate spelling similarity
+    $similarTextScore = 0;
     similar_text($value1, $value2, $similarTextScore);
 
-    // Calculate the Levenshtein distance
-    $maxLength = max(strlen($value1), strlen($value2));
-
-    $distance = levenshtein($value1, $value2);
-
-    // Convert the distance into a percentage
-    $levenshteinScore = (1 - ($distance / $maxLength)) * 100;
-
-    // Return the higher similarity score
-    return round(max($similarTextScore, $levenshteinScore), 2);
+    // Return the better score
+    return round(max($wordScore, $similarTextScore), 2);
 }
 
 
@@ -143,12 +170,12 @@ function calculateMatchScore($lost, $found) {
     );
 
     // Compare the dates of the lost and found reports
-    $lostDate = !empty($lost["DateOccured"])
-        ? strtotime($lost["DateOccured"])
+    $lostDate = !empty($lost["DateOccurred"])
+        ? strtotime($lost["DateOccurred"])
         : false;
 
-    $foundDate = !empty($found["DateOccured"])
-        ? strtotime($found["DateOccured"])
+    $foundDate = !empty($found["DateOccurred"])
+        ? strtotime($found["DateOccurred"])
         : false;
 
     if ($lostDate !== false && $foundDate !== false) {
@@ -174,16 +201,16 @@ function calculateMatchScore($lost, $found) {
     } else {
         $scores["date"] = 0;
     }
-
     // Map each attribute to its database column
     $columns = [
-        "category" => "CategoryName",
+        // TEMPORARY: Display individual matching scores
+       "category" => "CategoryName",
         "name" => "ItemName",
         "colour" => "Colour",
         "brand" => "Brand",
         "size" => "Size",
         "location" => "Location",
-        "date" => "DateOccured"
+        "date" => "DateOccurred"
     ];
 
     // Initialise the total score and weight
@@ -227,17 +254,17 @@ function calculateMatchScore($lost, $found) {
 $lostSQL = "
     SELECT
         r.ReportID,
-        r.DateOccured,
+        r.DateOccurred,
         r.Location,
         p.ItemName,
         p.Size,
         p.Brand,
         p.Colour,
         c.CategoryName
-    FROM `ITEM REPORT` r
-    JOIN `ITEM PROFILE` p
+    FROM `item_report` r
+    JOIN `item_profile` p
         ON r.ItemProfileID = p.ItemProfileID
-    JOIN CATEGORY c
+    JOIN `category` c
         ON p.CategoryID = c.CategoryID
     WHERE r.UserID = ?
         AND r.ReportType = 'Lost'
@@ -266,7 +293,7 @@ while ($row = $lostResult->fetch_assoc()) {
 $foundSQL = "
     SELECT
         r.ReportID,
-        r.DateOccured,
+        r.DateOccurred,
         r.Location,
         p.ItemName,
         p.Size,
@@ -275,18 +302,18 @@ $foundSQL = "
         c.CategoryName,
         (
             SELECT i.ImageLink
-            FROM `IMAGE ITEM` i
+            FROM `item_image` i
             WHERE i.ItemProfileID = p.ItemProfileID
             ORDER BY i.DateUpload DESC
             LIMIT 1
         ) AS ImageLink
-    FROM `ITEM REPORT` r
-    JOIN `ITEM PROFILE` p
+    FROM `item_report` r
+    JOIN `item_profile` p
         ON r.ItemProfileID = p.ItemProfileID
-    JOIN CATEGORY c
+    JOIN `category` c
         ON p.CategoryID = c.CategoryID
-    WHERE r.ReportType = 'Found'
-        AND r.Status = 'Open'
+    WHERE r.ReportType = 'FOUND'
+        AND r.Status = 'Found item is available to claim'
         AND r.UserID != ?
 ";
 
@@ -295,6 +322,14 @@ $foundStmt->bind_param("i", $userID);
 $foundStmt->execute();
 
 $foundResult = $foundStmt->get_result();
+
+
+// Store found reports
+$foundReports = [];
+
+while ($row = $foundResult->fetch_assoc()) {
+    $foundReports[] = $row;
+}
 
 
 /* ==========================================
@@ -332,14 +367,14 @@ while ($found = $foundResult->fetch_assoc()) {
                 "Brand" => $found["Brand"],
                 "Size" => $found["Size"],
                 "Location" => $found["Location"],
-                "DateOccured" => $found["DateOccured"],
+                "DateOccurred" => $found["DateOccurred"],
                 "ImageLink" => $found["ImageLink"],
                 "Score" => $score,
                 "MatchLevel" => $matchLevel
             ];
 
             // Stop after finding a match for this found report
-            break;
+            //break;
         }
     }
 }
@@ -348,6 +383,58 @@ while ($found = $foundResult->fetch_assoc()) {
 usort($matches, function ($a, $b) {
     return $b["Score"] <=> $a["Score"];
 });
+
+
+// Store possible matches
+$matches = [];
+
+// Compare every found report with the user's lost reports
+foreach ($foundReports as $found) {
+
+    $bestScore = 0;
+    $bestLostReport = null;
+
+    // Compare against every lost report
+    foreach ($lostReports as $lost) {
+
+        $score = calculateMatchScore($lost, $found);
+        // Keep the highest matching score
+        if ($score > $bestScore) {
+
+            $bestScore = $score;
+            $bestLostReport = $lost;
+        }
+    }
+    
+
+    // Display matches with at least 60% similarity
+    if ($bestScore >= 60 && $bestLostReport !== null) {
+
+        $matches[] = [
+            "ReportID" => $found["ReportID"],
+            "ItemName" => $found["ItemName"],
+            "CategoryName" => $found["CategoryName"],
+            "Colour" => $found["Colour"],
+            "Brand" => $found["Brand"],
+            "Size" => $found["Size"],
+            "Location" => $found["Location"],
+            "DateOccurred" => $found["DateOccurred"],
+            "ImageLink" => $found["ImageLink"],
+            "LostItemName" => $bestLostReport["ItemName"],
+            "Score" => $bestScore,
+
+            "MatchLevel" => $bestScore >= 80
+                ? "High Match"
+                : "Possible Match"
+        ];
+    }
+}
+
+// Sort matches from highest to lowest
+usort($matches, function ($a, $b) {
+    return $b["Score"] <=> $a["Score"];
+});
+
 
 ?>
 
@@ -358,7 +445,7 @@ usort($matches, function ($a, $b) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Possible Matches | UbdFind</title>
+    <title>Possible Matches | UBfounD</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -369,8 +456,77 @@ usort($matches, function ($a, $b) {
 </head>
 
 <body>
+<!-- ==================== NAVBAR ==================== -->
 
-<?php include "navbar.php"; ?>
+    <nav class="navbar navbar-expand-lg bg-white border-bottom">
+
+        <div class="container">
+
+            <a class="navbar-brand fw-bold" href="index.php">
+                <img src="\UBfounD\assets\images\ubfound-logo-version3d.png" 
+                alt="UBfounD Logo" 
+                class="navbar-logo">
+            </a>
+
+            <!-- Mobile menu button -->
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+            >
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+            <!-- Navigation links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="lost-items.php">Lost Items</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="found-items.php">Found Items</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="my-reports.php">My Reports</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="matches.php">Matches</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link notification-bell" href="notifications.php">
+                            🔔
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link active" href="profile.php">
+                            Profile
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+<?php ?>
 
 <div class="container py-5">
 
@@ -448,7 +604,7 @@ usort($matches, function ($a, $b) {
 
                             <p class="mb-3">
                                 <strong>Date:</strong>
-                                <?php echo htmlspecialchars($match["DateOccured"] ?: "Not specified"); ?>
+                                <?php echo htmlspecialchars($match["DateOccurred"] ?: "Not specified"); ?>
                             </p>
 
                             <hr>
@@ -465,7 +621,7 @@ usort($matches, function ($a, $b) {
                             <div class="mt-3">
 
                                 <a
-                                    href="item_details.php?report_id=<?php echo (int)$match["ReportID"]; ?>"
+                                    href="item-details.php?id=<?php echo (int)$match["ReportID"]; ?>"
                                     class="btn btn-primary w-100"
                                 >
                                     View Found Item
@@ -486,6 +642,58 @@ usort($matches, function ($a, $b) {
     <?php endif; ?>
 
 </div>
+
+    <!-- ==================== FOOTER ==================== -->
+
+    <footer class="py-2">
+
+        <div class="container text-center">
+
+            <!-- Website name -->
+            <p class="fw-bold mb-1">
+                UBfounD
+            </p>
+
+
+            <!-- Website description -->
+            <p class="small mb-1">
+                Campus Lost & Found System
+            </p>
+
+
+            <!-- Help information -->
+            <p class="small mb-1">
+                Need help?
+            </p>
+
+
+            <!-- Email -->
+            <p class="small mb-1">
+
+                Email:
+
+                <a href="mailto:lostandfound@university.edu">
+                    Ubfound@ubd.edu.bn
+                </a>
+
+            </p>
+
+
+            <!-- Phone -->
+            <p class="small mb-2">
+                Phone: +673 246 XXXX
+            </p>
+
+
+            <!-- Copyright -->
+            <p class="small mb-0">
+                © 2026 UBfounD. Helping UBD students return found items.
+            </p>
+
+        </div>
+
+    </footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
