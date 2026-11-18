@@ -1,4 +1,6 @@
 <?php
+
+
 // Connect to the database
 $conn = new mysqli(
     "localhost",
@@ -15,6 +17,8 @@ if ($conn->connect_error) {
     exit("Database connection failed. Please try again later.");
 }
 
+include __DIR__ . "/get-profile-picture.php";
+
 // Set the character set to UTF-8
 function e($value){
     return htmlspecialchars((string) ($value ??''),
@@ -22,6 +26,8 @@ function e($value){
     'UTF-8'
     );
 }
+
+
 
 // To count the current number of lost items, we can run a query to count the rows in the item_report table where ReportType is 'Lost'.
 $lostQuery = "
@@ -285,8 +291,37 @@ foreach ($lostReports as $lost) {
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="profile.php">
-                            Profile
+                        <a class="nav-link d-flex align-items-center gap-2"
+                            href="profile.php">
+
+                            <?php if (
+                            !empty($navProfilePicture) &&
+                             file_exists(__DIR__ . "/" . $navProfilePicture)
+                             ): ?>
+
+                            <img
+                                src="<?php echo safeOutput($navProfilePicture); ?>"
+                                alt="Profile Picture"
+                                class="rounded-circle"
+                                width="35"
+                                height="35"
+                                style="object-fit: cover;"
+                            >
+
+                            <?php else: ?>
+
+                        <span
+                        class="rounded-circle bg-light d-inline-flex
+                        align-items-center justify-content-center"
+                        style="width: 35px; height: 35px;"
+                        >
+                     👤
+                     </span>
+
+                    <?php endif; ?>
+
+                        
+
                         </a>
                     </li>
 
@@ -435,9 +470,6 @@ foreach ($lostReports as $lost) {
         </div>
 
     </section>
-
-
-    <!-- ==================== RECENT REPORTS ==================== -->
 
     
 <!-- ==================== RECENT REPORTS ==================== -->
@@ -622,4 +654,10 @@ foreach ($lostReports as $lost) {
 </body>
 
 </html>
+<?php
+
+// Close the database connection
+$conn->close();
+
+?>
 

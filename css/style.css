@@ -242,6 +242,21 @@ body {
 footer {
     background-color: #17365d;
     color: white;
+    margin-top: auto;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
 }
 
 /* ==================== LOGIN PAGE ==================== */

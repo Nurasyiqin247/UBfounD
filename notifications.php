@@ -51,7 +51,7 @@ $stmt->execute();
 
 $result = $stmt->get_result();
 
-$notifications = [];
+$notifications = $result->fetch_all(MYSQLI_ASSOC);
 
 while ($row = $result->fetch_assoc()) {
     $notifications[] = $row;
@@ -211,11 +211,6 @@ foreach ($notifications as $notification) {
         </div>
 
     </section>
-
-
-
-    <!-- ==================== NOTIFICATIONS ==================== -->
-
     
 <!-- ==================== NOTIFICATIONS ==================== -->
 
