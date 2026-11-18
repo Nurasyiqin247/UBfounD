@@ -282,7 +282,7 @@ $conn->close();
 
 <!-- FOOTER -->
 <footer class="py-3 text-center">
-    <div class="container">
+    <div class="container text-center">
         <p class="mb-0">
             &copy; 2026 UBFounD - Campus Lost & Found System
         </p>

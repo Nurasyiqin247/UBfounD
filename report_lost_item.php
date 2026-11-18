@@ -719,7 +719,7 @@ function escapeHtml($value) {
 
         <div class="container text-center">
 
-            <p class="text-muted mb-0">
+            <p class="mb-0">
                 © 2026 UBfounD. Helping UBD students return found items.
             </p>
 
