@@ -98,14 +98,11 @@ body {
     border-radius: 12px;
     overflow: hidden;
     transition: 0.2s;
-    height: 100%;
 }
-
 
 /* Simple placeholder for item images */
 .item-image {
-    width: 100%;
-    height: 220px;
+    height: 180px;
     background-color: #eef2f7;
     display: flex;
     align-items: center;
@@ -114,24 +111,38 @@ body {
     transition: 0.2s;
 }
 
-/* Make image display properly */
-.item-image-wrapper{
+/* Fixed image area for every card */
+/*.item-image-wrapper {
     width: 100%;
     height: 220px;
     overflow: hidden;
     background-color: #eef2f7;
     display: flex;
     align-items: center;
-    justify-content: center;    
-}
+    justify-content: center;
+}*/
 
-/* Adjust the uploaded image */
-.item-image-wrapper img {
+/* Display the entire uploaded photograph */
+.item-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    
 }
+
+/* Placeholder when no image is available */
+/*.item-image-wrapper .item-image {
+    width: 100%;
+    height: 100%;
+    background-color: #eef2f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    line-height: normal;
+    margin: 0;
+}*/
 
 /* Add a small effect when the mouse is over an item */
 .item-card:hover {
@@ -141,6 +152,39 @@ body {
 
 .item-card:hover .item-image {
     background-color: #e2eaf4;
+}
+
+/*Keep the fallback image hidden*/
+.item-image-fallback{
+    display: none;
+}
+
+/* =================================
+   HOMEPAGE - RECENT REPORTS ONLY
+================================= */
+
+.recent-report-image-wrapper {
+
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background-color: #eef2f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    
+}
+
+.recent-report-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    font-size: 60px;
+    line-height: none;
+    
+
 }
 
 
@@ -189,23 +233,6 @@ body {
     font-size: 20px;
 }
 
-.item-image {
-    height: 180px;
-    background-color: #eef2f7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 60px;
-    transition: 0.2s;
-}
-
-.item-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
 
 /* ================================
    FOOTER
@@ -216,12 +243,6 @@ footer {
     background-color: #17365d;
     color: white;
 }
-
-
-
-
-
-
 
 /* ==================== LOGIN PAGE ==================== */
 

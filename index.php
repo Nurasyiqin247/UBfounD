@@ -439,123 +439,123 @@ foreach ($lostReports as $lost) {
 
     <!-- ==================== RECENT REPORTS ==================== -->
 
-    <section class="pb-5">
+    
+<!-- ==================== RECENT REPORTS ==================== -->
 
-        <div class="container">
+<section class="pb-5">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <!-- Places the title and button on opposite sides -->
+    <div class="container">
 
-                <div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-                    <h2 class="fw-bold mb-1">
-                        Recent Reports
-                    </h2>
+            <div>
+                <h2 class="fw-bold mb-1">
+                    Recent Reports
+                </h2>
 
-                    <p class="text-muted mb-0">
-                        Recently reported items at UBD.
-                    </p>
-
-                </div>
-
-                <a href="lost-items.php" class="btn btn-outline-primary">
-                    View All
-                </a>
-
+                <p class="text-muted mb-0">
+                    Recently reported items at UBD.
+                </p>
             </div>
 
-            <!--RECENT REPORTS GRID-->
-            <div class="row g-4">
+            <a href="lost-items.php" class="btn btn-outline-primary">
+                View All
+            </a>
 
-                <!-- ITEM 1 -->
-                 <?php if (!empty($recentReports)): ?>
+        </div>
 
-                        <?php foreach ($recentReports as $report): ?>
+        <!-- RECENT REPORTS GRID -->
+        <div class="row g-4">
 
-                            <?php
-                                 $isLost = strtoupper(trim($report['ReportType'])) === 'LOST';
+            <?php if (!empty($recentReports)): ?>
 
-                                $badgeClass = $isLost
-                                     ? 'text-bg-danger'
-                                     : 'text-bg-success';
-                            ?>
+                <?php foreach ($recentReports as $report): ?>
 
+                    <?php
+                        $isLost = strtoupper(trim($report['ReportType'])) === 'LOST';
 
-                <div class="col-md-4">
+                        $badgeClass = $isLost
+                            ? 'text-bg-danger'
+                            : 'text-bg-success';
+                    ?>
 
-                    <div class="card item-card h-100">
+                    <div class="col-md-4">
 
-                        <!-- Placeholder image -->
-                         <?php if (!empty($report['ImageLink'])): ?>
+                        <!-- Report card -->
+                        <div class="item-card recent-report-card ">
 
-                        <img
-                            src="<?= e($report['ImageLink']) ?>"
-                            alt="<?= e($report['ItemName']) ?>"
-                            class="card-img-top"
-                            onerror="this.style.display='none';
-                            this.nextElement.style.display='flex';"
-                        >
-                        <!-- Display dummy image if the image failed to load -->
-                         <div class="item-image item-image-fallback" 
-                                style="display: none;">
-                            📱
+                            <!-- Image area -->
+                            <div class="recent-report-image-wrapper">
+
+                                <?php if (!empty($report['ImageLink'])): ?>
+
+                                    <img
+                                        src="<?= e($report['ImageLink']) ?>"
+                                        alt="<?= e($report['ItemName']) ?>"
+                                        onerror="this.onerror=null; this.src='\UBfounD\assets\images\search-icon.png';"
+                                    >
+
+                                <?php else: ?>
+
+                                    <img
+                                        src="\UBfounD\assets\images\search-icon.png"
+                                        alt="No image available"
+                                    >
+
+                                <?php endif; ?>
+
                             </div>
 
-                         <?php else: ?>
-                            <!--Display dummy image if no image is available -->
-                            <div class="item-image">
-                            📱
+                            <!-- Item information -->
+                            <div class="card-body p-3">
+
+                                <span class="badge <?= $badgeClass ?> mb-2">
+                                    <?= e(strtoupper($report['ReportType'])) ?>
+                                </span>
+
+                                <h5 class="card-title">
+                                    <?= e($report['ItemName']) ?>
+                                </h5>
+
+                                <p class="card-text text-muted">
+                                    <?= e($report['Location']) ?>
+                                </p>
+
+                                <p class="small text-muted">
+                                    <?= e($report['CategoryName'] ?: 'Uncategorized') ?>
+                                </p>
+
+                                <a
+                                    href="item-details.php?id=<?= (int) $report['ReportID'] ?>"
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    View Details
+                                </a>
+
                             </div>
-                         <?php endif; ?>
-
-
-                         <!-- Item information -->       
-                        <div class="card-body">
-
-                            <span class="badge <?= $badgeClass ?> mb-2">
-                                <?= e(strtoupper($report['ReportType'])) ?>
-                            </span>
-
-                            <h5 class="card-title">
-                                <?= e($report['ItemName']) ?>
-                            </h5>
-
-                            <p class="card-text text-muted">
-                                <?= e($report['Location']) ?>
-                            </p>
-
-                                <P class="small text-muted">
-
-                                   <?= e($report['CategoryName']?: 'Uncategorized') ?>
-
-                                </P>
-
-                            <a href="item-details.php?id=<?= urldecode($report['ReportID']) ?>
-                            " class="btn btn-sm btn-outline-primary">
-                                View Details
-                            </a>
 
                         </div>
 
                     </div>
 
+                <?php endforeach; ?>
+
+            <?php else: ?>
+
+                <div class="col-12 text-center">
+                    <p class="text-muted">
+                        No recent reports found.
+                    </p>
                 </div>
-                
-                    <?php endforeach; ?>
 
-                    <?php else: ?>
+            <?php endif; ?>
 
-                        <div class="col-12 text center  ">
-                            <p class="text-muted">
-                                No recent reports found.
-                            </p>
-                        </div>
+        </div>
 
-                    <?php endif; ?>
+    </div>
 
-                <!-- ITEM 2 -->
+</section>
 
-    </section>
 
 
     <!-- ==================== FOOTER ==================== -->
