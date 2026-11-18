@@ -52,26 +52,31 @@ r.DateReported,
 r.Location,
 p.ItemName, 
 c.CategoryName,
-ii.ImageLink
+
+    (
+    SELECT ii.ImageLink
+    FROM item_image AS ii
+    WHERE ii.ItemProfileID = p.ItemProfileID
+    ORDER BY ii.DateUpload DESC
+    LIMIT 1
+    ) AS ImageLink
 
 FROM item_report AS r
 
 INNER JOIN item_profile AS p 
-ON r.ItemProfileID = p.ItemProfileID
+    ON r.ItemProfileID = p.ItemProfileID
 
 LEFT JOIN category AS c
-ON p.CategoryID = c.CategoryID
-
-LEFT JOIN item_image AS ii
-ON p.ItemProfileID = ii.ItemProfileID
+    ON p.CategoryID = c.CategoryID
 
 ORDER BY 
-r.DateReported DESC,
-r.ReportID DESC,
-ii.DateUpload DESC
+    r.DateReported DESC,
+    r.ReportID DESC
+    
 
 LIMIT 3
 ";
+
 $recentResult = $conn->query($recentQuery);
 
 $recentReports = $recentResult ? 
@@ -313,7 +318,7 @@ foreach ($lostReports as $lost) {
                     <h1 class="display-5 fw-bold">
                         Lost something on campus?
                         <br>
-                        Find it here at UbdFind.
+                        Find it here at UBfound.
                     </h1>
                     
 
@@ -487,10 +492,17 @@ foreach ($lostReports as $lost) {
                             src="<?= e($report['ImageLink']) ?>"
                             alt="<?= e($report['ItemName']) ?>"
                             class="card-img-top"
-                            style="height: 220px; object-fit: contain;"
+                            onerror="this.style.display='none';
+                            this.nextElement.style.display='flex';"
                         >
+                        <!-- Display dummy image if the image failed to load -->
+                         <div class="item-image item-image-fallback" 
+                                style="display: none;">
+                            📱
+                            </div>
 
                          <?php else: ?>
+                            <!--Display dummy image if no image is available -->
                             <div class="item-image">
                             📱
                             </div>

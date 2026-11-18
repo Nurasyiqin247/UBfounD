@@ -1,11 +1,14 @@
 <?php
+// Start the session
 session_start();
 
+// Check if the request method is POST and connect  to register page.
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: register.html");
     exit;
 }
 
+// Function to check if a column exists in the user table
 function getUserColumn(mysqli $conn, array $candidates): string
 {
     $result = $conn->query("SHOW COLUMNS FROM `user`");
@@ -26,7 +29,7 @@ function getUserColumn(mysqli $conn, array $candidates): string
 
     return $candidates[0];
 }
-
+// connect to the database
 $conn = new mysqli(
     "localhost",
     "root",
@@ -35,12 +38,14 @@ $conn = new mysqli(
     4406
 );
 
+// check connection in case of error
 if ($conn->connect_error) {
     http_response_code(500);
     header("Location: register.html?error=" . urlencode("Database connection failed. Please try again later."));
     exit;
 }
 
+// Set the character set to UTF-8
 $conn->set_charset("utf8mb4");
 
 $name = trim($_POST["name"] ?? "");
