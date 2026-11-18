@@ -192,7 +192,7 @@ foreach ($lostReports as $lost) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Makes the website responsive on phones, tablets and laptops -->
 
-    <title>UbdFind - Lost & Found</title>
+    <title>UbfounD - Lost & Found</title>
     <!-- Text shown in the browser tab -->
 
     <!-- Bootstrap CSS

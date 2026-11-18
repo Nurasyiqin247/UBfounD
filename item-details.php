@@ -133,7 +133,7 @@ $conn->close();
             <ul class="navbar-nav ms-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
 
                 <li class="nav-item">
