@@ -330,7 +330,7 @@ function normaliseColour($colour) {
     return round($totalScore / $totalWeight, 2);
 }*/
 
-/ This function compares a lost report with a found report.
+//This function compares a lost report with a found report.
 function calculateMatchScore($lost, $found) {
 
     // Assign a weight to each attribute.
@@ -513,7 +513,7 @@ $foundSQL = "
     JOIN `category` c
         ON p.CategoryID = c.CategoryID
 
-    WHERE r.ReportType IN ('Found', 'FOUND')
+    WHERE r.ReportType = 'FOUND'
         AND r.Status = 'Found item is available to claim'
         AND r.UserID != ?
 ";
@@ -652,6 +652,14 @@ while ($found = $foundResult->fetch_assoc()) {
 
         // Calculate the similarity score between the two reports.
         $score = calculateMatchScore($lost, $found);
+        // TEMPORARY DEBUGGING
+            echo "<pre>";
+
+            echo "Lost Item: " . $lost['ItemName'] . "\n";
+            echo "Found Item: " . $found['ItemName'] . "\n";
+            echo "Matching Score: " . $score . "%\n";
+
+            echo "</pre>";
 
         // Check whether the score reaches the minimum 60% threshold.
         if ($score >= 60) {
@@ -714,10 +722,10 @@ usort($matches, function ($a, $b) {
 // ==================================================
 
 // Close the lost reports statement.
-$lostStatement->close();
+$lostStmt->close();
 
 // Close the found reports statement.
-$foundStatement->close();
+$foundStmt->close();
 
 // Close the database connection.
 $conn->close();
