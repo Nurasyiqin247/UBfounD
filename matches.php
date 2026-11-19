@@ -1,20 +1,33 @@
 <?php
+// ==================================================
+// 1. START SESSION AND CHECK LOGIN
+// ==================================================
+
+// Start the session to access the logged-in user's information.
 session_start();
 
 
 // Check whether the user is logged in
 if (!isset($_SESSION["user_id"])) {
+
     header("Location: login.html");
     exit();
 }
 
-// Connect to the database
+
+// ==================================================
+// 2. CONNECT TO THE DATABASE
+// ==================================================
+
+// Connect to the Lost and Found database.
+
 $conn = new mysqli(
     "localhost", 
     "root", 
     "1234", 
     "lostandfound", 
     4406);
+
 
 // Check database connection
 if ($conn->connect_error) {
@@ -31,11 +44,48 @@ $userID = $_SESSION["user_id"];
 
 
 /* ==========================================
-   TEXT SIMILARITY FUNCTION
+   3. TEXT SIMILARITY FUNCTION
 ========================================== */
 
-// Calculate similarity between two text values
+// This function compares two text values and returns a similarity score from 0 to 100.
 function textSimilarity($value1, $value2) {
+
+    // Convert both values into lowercase and remove unnecessary spaces.
+    $value1 = strtolower(trim((string)$value1));
+    $value2 = strtolower(trim((string)$value2));
+
+    // Replace multiple spaces with a single space.
+    $value1 = preg_replace('/\s+/', ' ', $value1);
+    $value2 = preg_replace('/\s+/', ' ', $value2);
+
+    // Return 0 if either value is empty.
+    if ($value1 === "" || $value2 === "") {
+        return 0;
+    }
+
+    // Return 100 if both values are exactly the same.
+    if ($value1 === $value2) {
+        return 100;
+    }
+
+    // Use similar_text() to calculate the percentage of similarity.
+    similar_text($value1, $value2, $similarityPercentage);
+
+    // Calculate the Levenshtein distance between the two values.
+    $distance = levenshtein($value1, $value2);
+
+    // Find the length of the longer text.
+    $longestLength = max(strlen($value1), strlen($value2));
+
+    // Convert the Levenshtein distance into a percentage score.
+    $levenshteinScore = (1 - ($distance / $longestLength)) * 100;
+
+    // Return whichever similarity score is higher.
+    return max($similarityPercentage, $levenshteinScore);
+}
+
+// Calculate similarity between two text values
+/*function textSimilarity($value1, $value2) {
 
     $value1 = strtolower(trim((string)$value1));
     $value2 = strtolower(trim((string)$value2));
@@ -80,15 +130,15 @@ function textSimilarity($value1, $value2) {
 
     // Return the better score
     return round(max($wordScore, $similarTextScore), 2);
-}
+}*/
 
 
 /* ==========================================
-   COLOUR NORMALISATION
+  4. COLOUR NORMALISATION
 ========================================== */
 
 // Convert common colour variations into standard names
-function normaliseColour($colour) {
+/*function normaliseColour($colour) {
 
     // Convert colour to lowercase
     $colour = strtolower(trim((string)$colour));
@@ -109,15 +159,50 @@ function normaliseColour($colour) {
 
     // Return the standard colour name if available
     return $colourGroups[$colour] ?? $colour;
+}*/
+
+// This function treats different descriptions of the same colour as equivalent.
+function normaliseColour($colour) {
+
+    // Convert the colour into lowercase and remove unnecessary spaces.
+    $colour = strtolower(trim((string)$colour));
+
+    // Treat grey and gray as the same colour.
+    if ($colour === "grey" || $colour === "gray") {
+        return "gray";
+    }
+
+    // Treat different shades of blue as blue.
+    if (
+        $colour === "navy blue" ||
+        $colour === "dark blue" ||
+        $colour === "light blue" ||
+        $colour === "navy"
+    ) {
+        return "blue";
+    }
+
+    // Treat maroon and burgundy as red.
+    if ($colour === "maroon" || $colour === "burgundy") {
+        return "red";
+    }
+
+    // Treat cream as white.
+    if ($colour === "cream") {
+        return "white";
+    }
+
+    // Return the original colour if no normalisation is needed.
+    return $colour;
 }
 
 
 /* ==========================================
-   MATCHING SCORE CALCULATION
+   6. MATCHING SCORE CALCULATION
 ========================================== */
 
 // Calculate the matching score between lost and found items
-function calculateMatchScore($lost, $found) {
+/*function calculateMatchScore($lost, $found) {
 
     // Define the importance of each attribute
     $weights = [
@@ -243,11 +328,110 @@ function calculateMatchScore($lost, $found) {
 
     // Return the final matching percentage
     return round($totalScore / $totalWeight, 2);
+}*/
+
+/ This function compares a lost report with a found report.
+function calculateMatchScore($lost, $found) {
+
+    // Assign a weight to each attribute.
+    // All weights add up to 100.
+    $weights = [
+        "CategoryName" => 25,
+        "ItemName"     => 20,
+        "Colour"       => 15,
+        "Brand"        => 15,
+        "Size"         => 10,
+        "Location"     => 10,
+        "DateOccurred"  => 5
+    ];
+
+    // Store the total weighted similarity score.
+    $totalScore = 0;
+
+    // Store the total weight of the attributes being compared.
+    $totalWeight = 0;
+
+    // Compare each attribute between the lost and found reports.
+    foreach ($weights as $column => $weight) {
+
+        // Only compare an attribute when both reports contain a value.
+        if (
+            isset($lost[$column], $found[$column]) &&
+            trim((string)$lost[$column]) !== "" &&
+            trim((string)$found[$column]) !== ""
+        ) {
+
+            // Store the values that will be compared.
+            $lostValue = $lost[$column];
+            $foundValue = $found[$column];
+
+            // Normalise the colours before comparing them.
+            if ($column === "Colour") {
+                $lostValue = normaliseColour($lostValue);
+                $foundValue = normaliseColour($foundValue);
+            }
+
+            // Calculate similarity for ordinary text attributes.
+            if ($column !== "DateOccured") {
+
+                // Compare the two text values.
+                $attributeScore = textSimilarity($lostValue, $foundValue);
+
+            } else {
+
+                // Convert both dates into timestamps.
+                $lostDate = strtotime($lostValue);
+                $foundDate = strtotime($foundValue);
+
+                // Check whether both dates are valid.
+                if ($lostDate !== false && $foundDate !== false) {
+
+                    // Calculate the absolute difference between the dates in days.
+                    $daysDifference = abs($lostDate - $foundDate) / 86400;
+
+                    // Give a higher score when the dates are closer together.
+                    if ($daysDifference == 0) {
+                        $attributeScore = 100;
+                    } elseif ($daysDifference <= 3) {
+                        $attributeScore = 80;
+                    } elseif ($daysDifference <= 7) {
+                        $attributeScore = 60;
+                    } elseif ($daysDifference <= 14) {
+                        $attributeScore = 40;
+                    } elseif ($daysDifference <= 30) {
+                        $attributeScore = 20;
+                    } else {
+                        $attributeScore = 0;
+                    }
+
+                } else {
+
+                    // Give 0 if either date is invalid.
+                    $attributeScore = 0;
+                }
+            }
+
+            // Multiply the attribute score by its assigned weight.
+            $totalScore += $attributeScore * $weight;
+
+            // Add the attribute weight to the total available weight.
+            $totalWeight += $weight;
+        }
+    }
+
+    // Return 0 if there are no attributes available for comparison.
+    if ($totalWeight == 0) {
+        return 0;
+    }
+
+    // Calculate the weighted average and round it to two decimal places.
+    return round($totalScore / $totalWeight, 2);
 }
 
 
+
 /* ==========================================
-   RETRIEVE LOST ITEM REPORTS
+  7. RETRIEVE LOST ITEM REPORTS
 ========================================== */
 
 // Retrieve the logged-in user's open lost item reports
@@ -261,32 +445,45 @@ $lostSQL = "
         p.Brand,
         p.Colour,
         c.CategoryName
+
     FROM `item_report` r
+
     JOIN `item_profile` p
         ON r.ItemProfileID = p.ItemProfileID
+
     JOIN `category` c
         ON p.CategoryID = c.CategoryID
+
     WHERE r.UserID = ?
         AND r.ReportType = 'Lost'
         AND r.Status = 'Open'
 ";
-
+//Prepare the SQL statement to retrieve lost item reports for the logged-in user
 $lostStmt = $conn->prepare($lostSQL);
+
+//Pass the logged-in user's ID as a parameter to the SQL statement
 $lostStmt->bind_param("i", $userID);
+
+//Execute the SQL statement to retrieve lost item reports
 $lostStmt->execute();
 
+
+//Retrieve the query result for lost item reports
 $lostResult = $lostStmt->get_result();
 
 // Store all lost reports
 $lostReports = [];
 
+// Fetch each lost report and add it to the array of lost reports
 while ($row = $lostResult->fetch_assoc()) {
+
+    //Add the lost report to the array of lost reports
     $lostReports[] = $row;
 }
 
 
 /* ==========================================
-   RETRIEVE FOUND ITEM REPORTS
+   7. RETRIEVE FOUND ITEM REPORTS
 ========================================== */
 
 // Retrieve open found item reports from other users
@@ -307,19 +504,29 @@ $foundSQL = "
             ORDER BY i.DateUpload DESC
             LIMIT 1
         ) AS ImageLink
+
     FROM `item_report` r
+
     JOIN `item_profile` p
         ON r.ItemProfileID = p.ItemProfileID
+
     JOIN `category` c
         ON p.CategoryID = c.CategoryID
-    WHERE r.ReportType = 'FOUND'
+
+    WHERE r.ReportType IN ('Found', 'FOUND')
         AND r.Status = 'Found item is available to claim'
         AND r.UserID != ?
 ";
 
+//Prepare the SQL statement to retrieve found item reports from other users
 $foundStmt = $conn->prepare($foundSQL);
+
+//Pass the logged-in user's ID as a parameter to the SQL statement
 $foundStmt->bind_param("i", $userID);
+
+//Execute the SQL statement to retrieve found item reports
 $foundStmt->execute();
+
 
 $foundResult = $foundStmt->get_result();
 
@@ -327,20 +534,21 @@ $foundResult = $foundStmt->get_result();
 // Store found reports
 $foundReports = [];
 
+// Fetch each found report and add it to the array of found reports
 while ($row = $foundResult->fetch_assoc()) {
     $foundReports[] = $row;
 }
 
 
 /* ==========================================
-   COMPARE LOST AND FOUND ITEMS
+   8. COMPARE FOUND REPORTS WITH ALL LOST REPORTS
 ========================================== */
 
 // Store all possible matches
 $matches = [];
 
 // Compare each found item against the user's lost reports
-while ($found = $foundResult->fetch_assoc()) {
+/*while ($found = $foundResult->fetch_assoc()) {
 
     // Compare against every lost report
     foreach ($lostReports as $lost) {
@@ -428,122 +636,194 @@ foreach ($foundReports as $found) {
                 : "Possible Match"
         ];
     }
+}*/
+
+// Go through every found report.
+while ($found = $foundResult->fetch_assoc()) {
+
+    // Store the highest matching score for this found report.
+    $highestScore = 0;
+
+    // Store the best matching lost report.
+    $bestLostReport = null;
+
+    // Compare this found report with every lost report belonging to the user.
+    foreach ($lostReports as $lost) {
+
+        // Calculate the similarity score between the two reports.
+        $score = calculateMatchScore($lost, $found);
+
+        // Check whether the score reaches the minimum 60% threshold.
+        if ($score >= 60) {
+
+            // Check whether this score is higher than the previous best score.
+            if ($score > $highestScore) {
+
+                // Update the highest matching score.
+                $highestScore = $score;
+
+                // Remember the lost report that produced this score.
+                $bestLostReport = $lost;
+            }
+        }
+    }
+
+    // Add the found report only after all lost reports have been checked.
+    if ($bestLostReport !== null) {
+
+        // Assign a match label based on the highest score.
+        if ($highestScore >= 80) {
+            $matchLevel = "High Match";
+        } else {
+            $matchLevel = "Possible Match";
+        }
+
+        // Store the found report and its highest matching score.
+        $matches[] = [
+            "ReportID" => $found["ReportID"],
+            "ItemName" => $found["ItemName"],
+            "CategoryName" => $found["CategoryName"],
+            "Location" => $found["Location"],
+            "DateOccured" => $found["DateOccured"],
+            "ImageLink" => $found["ImageLink"],
+            "MatchScore" => $highestScore,
+            "MatchLevel" => $matchLevel
+        ];
+    }
 }
 
+
 // Sort matches from highest to lowest
-usort($matches, function ($a, $b) {
+/*usort($matches, function ($a, $b) {
     return $b["Score"] <=> $a["Score"];
+});*/
+
+// ==================================================
+// 9. SORT MATCHES BY HIGHEST SCORE
+// ==================================================
+
+// Arrange the matching reports from highest to lowest score.
+usort($matches, function ($a, $b) {
+
+    // Compare the matching scores in descending order.
+    return $b["MatchScore"] <=> $a["MatchScore"];
 });
+
+// ==================================================
+// 10. CLOSE DATABASE CONNECTIONS
+// ==================================================
+
+// Close the lost reports statement.
+$lostStatement->close();
+
+// Close the found reports statement.
+$foundStatement->close();
+
+// Close the database connection.
+$conn->close();
 
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
+    <!-- Set the character encoding. -->
     <meta charset="UTF-8">
+
+    <!-- Make the page responsive on different screen sizes. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Set the browser tab title. -->
     <title>Possible Matches | UBfounD</title>
 
+    <!-- Import Bootstrap 5.3.3 CSS. -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
+    <!-- Import the website's custom stylesheet. -->
     <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body>
-<!-- ==================== NAVBAR ==================== -->
 
-    <nav class="navbar navbar-expand-lg bg-white border-bottom">
 
+    <!-- ==================================================
+         11. NAVIGATION BAR
+    =================================================== -->
+
+    <!-- Create the main navigation bar. -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+
+        <!-- Keep the navbar content aligned with the page. -->
         <div class="container">
 
+            <!-- Display the website name. -->
             <a class="navbar-brand fw-bold" href="index.php">
-                <img src="\UBfounD\assets\images\ubfound-logo-version3d.png" 
-                alt="UBfounD Logo" 
-                class="navbar-logo">
+                UbdFind
             </a>
 
-            <!-- Mobile menu button -->
+            <!-- Button for opening the navigation menu on smaller screens. -->
             <button
                 class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
+                data-bs-target="#navbarContent"
+                aria-controls="navbarContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
             >
 
+                <!-- Display the Bootstrap menu icon. -->
                 <span class="navbar-toggler-icon"></span>
 
             </button>
 
-            <!-- Navigation links -->
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Navigation links that collapse on smaller screens. -->
+            <div class="collapse navbar-collapse" id="navbarContent">
 
+                <!-- Align the navigation links to the right. -->
                 <ul class="navbar-nav ms-auto">
 
+                    <!-- Link to the home page. -->
                     <li class="nav-item">
                         <a class="nav-link" href="index.php">Home</a>
                     </li>
 
+                    <!-- Link to the lost items page. -->
                     <li class="nav-item">
-                        <a class="nav-link" href="lost-items.php">Lost Items</a>
+                        <a class="nav-link" href="lost_items.php">Lost Items</a>
                     </li>
 
+                    <!-- Link to the found items page. -->
                     <li class="nav-item">
-                        <a class="nav-link" href="found-items.php">Found Items</a>
+                        <a class="nav-link" href="found_items.php">Found Items</a>
                     </li>
 
+                    <!-- Link to the user's reports page. -->
                     <li class="nav-item">
-                        <a class="nav-link" href="my-reports.php">My Reports</a>
+                        <a class="nav-link" href="my_reports.php">My Reports</a>
                     </li>
 
+                    <!-- Highlight Matches because this is the current page. -->
                     <li class="nav-item">
-                        <a class="nav-link" href="matches.php">Matches</a>
+                        <a class="nav-link active" href="matches.php">Matches</a>
                     </li>
 
+                    <!-- Link to the notifications page. -->
                     <li class="nav-item">
-                        <a class="nav-link notification-bell" href="notifications.php">
-                            🔔
-                        </a>
+                        <a class="nav-link" href="notifications.php">Notifications</a>
                     </li>
 
+                    <!-- Link to the user's profile page. -->
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2"
-                        href="profile.php">
-
-                        <?php if (
-                            !empty($navProfilePicture) &&
-                            file_exists(__DIR__ . "/" . $navProfilePicture)
-                        ): ?>
-
-                            <img
-                                src="<?php echo safeOutput($navProfilePicture); ?>"
-                                alt="Profile Picture"
-                                class="rounded-circle"
-                                width="35"
-                                height="35"
-                                style="object-fit: cover;"
-                            >
-
-                        <?php else: ?>
-
-                    <span
-                        class="rounded-circle bg-light d-inline-flex
-                       align-items-center justify-content-center"
-                        style="width: 35px; height: 35px;"
-                         >
-                    👤
-                    </span>
-
-                        <?php endif; ?>
-
-                        
-
-                        </a>
+                        <a class="nav-link" href="profile.php">Profile</a>
                     </li>
 
                 </ul>
@@ -555,106 +835,185 @@ usort($matches, function ($a, $b) {
     </nav>
 
 
-<?php ?>
+    <!-- ==================================================
+         12. POSSIBLE MATCHES PAGE CONTENT
+    =================================================== -->
 
-<div class="container py-5">
+    <!-- Main container for the page content. -->
+    <div class="container py-5">
 
-    <h2 class="mb-3">Possible Matches</h2>
+        <!-- Page heading and introduction. -->
+        <div class="mb-4">
 
-    <p class="text-muted mb-4">
-        These found items have similar details to the lost items you reported.
-    </p>
+            <!-- Main page heading. -->
+            <h1 class="fw-bold">Possible Matches</h1>
 
-    <?php if (empty($lostReports)): ?>
+            <!-- Short explanation of the matching feature. -->
+            <p class="text-muted">
+                Found items that may match your reported lost items.
+            </p>
 
-        <div class="alert alert-info">
-            You do not have any open lost item reports.
-            Please report a lost item first to see possible matches.
         </div>
 
-    <?php elseif (empty($matches)): ?>
 
-        <div class="alert alert-info">
-            No possible matches were found at the moment.
-            Please check again later.
-        </div>
+        <!-- ==================================================
+             13. DISPLAY MATCHING FOUND REPORTS
+        =================================================== -->
 
-    <?php else: ?>
+        <?php if (count($matches) > 0): ?>
 
-        <div class="row">
-
+            <!-- Loop through every matching found report. -->
             <?php foreach ($matches as $match): ?>
 
-                <div class="col-md-4 mb-4">
+                <!-- Create one horizontal card for each matching found report. -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
 
-                    <div class="card h-100 shadow-sm">
+                    <!-- Add spacing inside the card. -->
+                    <div class="card-body p-4">
 
-                        <?php if (!empty($match["ImageLink"])): ?>
+                        <!-- Arrange the image, information and buttons horizontally. -->
+                        <div class="row align-items-center">
 
-                            <img
-                                src="<?php echo htmlspecialchars($match["ImageLink"]); ?>"
-                                class="card-img-top"
-                                alt="Found item image"
-                                style="height: 220px; object-fit: cover;"
-                            >
 
-                        <?php endif; ?>
+                            <!-- ==========================================
+                                 ITEM IMAGE
+                            =========================================== -->
 
-                        <div class="card-body">
+                            <!-- Image occupies 3 columns on medium and larger screens. -->
+                            <div class="col-md-3 mb-3 mb-md-0">
 
-                            <h5 class="card-title">
-                                <?php echo htmlspecialchars($match["ItemName"]); ?>
-                            </h5>
-
-                            <p class="mb-1">
-                                <strong>Category:</strong>
-                                <?php echo htmlspecialchars($match["CategoryName"]); ?>
-                            </p>
-
-                            <p class="mb-1">
-                                <strong>Colour:</strong>
-                                <?php echo htmlspecialchars($match["Colour"] ?: "Not specified"); ?>
-                            </p>
-
-                            <p class="mb-1">
-                                <strong>Brand:</strong>
-                                <?php echo htmlspecialchars($match["Brand"] ?: "Not specified"); ?>
-                            </p>
-
-                            <p class="mb-1">
-                                <strong>Size:</strong>
-                                <?php echo htmlspecialchars($match["Size"] ?: "Not specified"); ?>
-                            </p>
-
-                            <p class="mb-1">
-                                <strong>Location:</strong>
-                                <?php echo htmlspecialchars($match["Location"] ?: "Not specified"); ?>
-                            </p>
-
-                            <p class="mb-3">
-                                <strong>Date:</strong>
-                                <?php echo htmlspecialchars($match["DateOccurred"] ?: "Not specified"); ?>
-                            </p>
-
-                            <hr>
-
-                            <p class="mb-1">
-                                <strong>Matching Score:</strong>
-                                <?php echo $match["Score"]; ?>%
-                            </p>
-
-                            <span class="badge <?php echo $match["Score"] >= 80 ? "bg-success" : "bg-warning text-dark"; ?>">
-                                <?php echo htmlspecialchars($match["MatchLevel"]); ?>
-                            </span>
-
-                            <div class="mt-3">
-
-                                <a
-                                    href="item-details.php?id=<?php echo (int)$match["ReportID"]; ?>"
-                                    class="btn btn-primary w-100"
+                                <!-- Create an image container with a fixed height. -->
+                                <div
+                                    class="rounded-3 bg-light d-flex align-items-center justify-content-center"
+                                    style="height: 180px; overflow: hidden;"
                                 >
-                                    View Found Item
-                                </a>
+
+                                    <?php if (!empty($match["ImageLink"])): ?>
+
+                                        <!-- Display the image when an image link exists. -->
+                                        <img
+                                            src="<?php echo htmlspecialchars($match["ImageLink"]); ?>"
+                                            alt="Found item image"
+                                            class="img-fluid w-100 h-100"
+                                            style="object-fit: contain;"
+                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                        >
+
+                                        <!-- Display this message if the image cannot load. -->
+                                        <div
+                                            class="w-100 h-100 align-items-center justify-content-center text-muted"
+                                            style="display: none;"
+                                        >
+                                            Image Not Available
+                                        </div>
+
+                                    <?php else: ?>
+
+                                        <!-- Display this message if no image link exists. -->
+                                        <span class="text-muted">
+                                            Image Not Available
+                                        </span>
+
+                                    <?php endif; ?>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ==========================================
+                                 ITEM INFORMATION
+                            =========================================== -->
+
+                            <!-- Item information occupies 6 columns on medium and larger screens. -->
+                            <div class="col-md-6">
+
+                                <!-- Display the match level as a badge. -->
+                                <?php if ($match["MatchLevel"] === "High Match"): ?>
+
+                                    <!-- Green badge for high matching scores. -->
+                                    <span class="badge bg-success mb-2">
+                                        <?php echo htmlspecialchars($match["MatchLevel"]); ?>
+                                    </span>
+
+                                <?php else: ?>
+
+                                    <!-- Yellow badge for possible matching scores. -->
+                                    <span class="badge bg-warning text-dark mb-2">
+                                        <?php echo htmlspecialchars($match["MatchLevel"]); ?>
+                                    </span>
+
+                                <?php endif; ?>
+
+                                <!-- Display the found item's name. -->
+                                <h5 class="fw-bold mb-2">
+                                    <?php echo htmlspecialchars($match["ItemName"]); ?>
+                                </h5>
+
+                                <!-- Display the category of the found item. -->
+                                <p class="mb-1">
+                                    <strong>Category:</strong>
+                                    <?php echo htmlspecialchars($match["CategoryName"]); ?>
+                                </p>
+
+                                <!-- Display the date when the item was found. -->
+                                <p class="mb-1">
+                                    <strong>Date Found:</strong>
+
+                                    <?php
+                                    // Format the date for easier reading.
+                                    echo !empty($match["DateOccured"])
+                                        ? htmlspecialchars(date("d M Y", strtotime($match["DateOccured"])))
+                                        : "Not Available";
+                                    ?>
+
+                                </p>
+
+                                <!-- Display the location where the item was found. -->
+                                <p class="mb-1">
+                                    <strong>Location:</strong>
+
+                                    <?php
+                                    // Display the location or a fallback message.
+                                    echo !empty($match["Location"])
+                                        ? htmlspecialchars($match["Location"])
+                                        : "Not Available";
+                                    ?>
+
+                                </p>
+
+                            </div>
+
+
+                            <!-- ==========================================
+                                 ACTION BUTTONS
+                            =========================================== -->
+
+                            <!-- Buttons occupy 3 columns on medium and larger screens. -->
+                            <div class="col-md-3 mt-3 mt-md-0">
+
+                                <!-- Stack the buttons vertically. -->
+                                <div class="d-grid gap-2">
+
+                                    <!-- View Details will be connected later. -->
+                                    <a
+                                        href="#"
+                                        onclick="return false;"
+                                        class="btn btn-primary"
+                                    >
+                                        View Details
+                                    </a>
+
+                                    <!-- Contact Finder will be connected later. -->
+                                    <a
+                                        href="#"
+                                        onclick="return false;"
+                                        class="btn btn-outline-primary"
+                                    >
+                                        Contact Finder
+                                    </a>
+
+                                </div>
 
                             </div>
 
@@ -666,72 +1025,46 @@ usort($matches, function ($a, $b) {
 
             <?php endforeach; ?>
 
-        </div>
+        <?php else: ?>
 
-    <?php endif; ?>
+            <!-- Display a message when no matching reports are found. -->
+            <div class="alert alert-info text-center rounded-4">
 
-</div>
+                <!-- Heading for the empty results message. -->
+                <h5 class="fw-bold">No Possible Matches Found</h5>
 
-    <!-- ==================== FOOTER ==================== -->
+                <!-- Explain why the page may be empty. -->
+                <p class="mb-0">
+                    There are currently no found items matching your open lost item reports.
+                    Please check again later.
+                </p>
 
-    <footer class="py-2">
+            </div>
 
-        <div class="container text-center">
+        <?php endif; ?>
 
-            <!-- Website name -->
-            <p class="fw-bold mb-1">
-                UBfounD
-            </p>
-
-
-            <!-- Website description -->
-            <p class="small mb-1">
-                Campus Lost & Found System
-            </p>
+    </div>
 
 
-            <!-- Help information -->
-            <p class="small mb-1">
-                Need help?
-            </p>
+    <!-- ==================================================
+         14. FOOTER
+    =================================================== -->
 
+    <!-- Display the website footer. -->
+    <footer class="text-center py-4 mt-5 bg-light">
 
-            <!-- Email -->
-            <p class="small mb-1">
-
-                Email:
-
-                <a href="mailto:lostandfound@university.edu">
-                    Ubfound@ubd.edu.bn
-                </a>
-
-            </p>
-
-
-            <!-- Phone -->
-            <p class="small mb-2">
-                Phone: +673 246 XXXX
-            </p>
-
-
-            <!-- Copyright -->
-            <p class="small mb-0">
-                © 2026 UBfounD. Helping UBD students return found items.
-            </p>
-
-        </div>
+        <!-- Display the copyright information. -->
+        <p class="mb-0 text-muted">
+            &copy; <?php echo date("Y"); ?> UbdFind. All Rights Reserved.
+        </p>
 
     </footer>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Import Bootstrap JavaScript for the responsive navigation menu. -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>
 
-<?php
-// Close database statements and connection
-$lostStmt->close();
-$foundStmt->close();
-$conn->close();
-?>
