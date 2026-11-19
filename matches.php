@@ -372,7 +372,7 @@ function calculateMatchScore($lost, $found) {
             }
 
             // Calculate similarity for ordinary text attributes.
-            if ($column !== "DateOccured") {
+            if ($column !== "DateOccurred") {
 
                 // Compare the two text values.
                 $attributeScore = textSimilarity($lostValue, $foundValue);
@@ -474,7 +474,6 @@ $lostResult = $lostStmt->get_result();
 // Store all lost reports
 $lostReports = [];
 
-// Fetch each lost report and add it to the array of lost reports
 while ($row = $lostResult->fetch_assoc()) {
 
     //Add the lost report to the array of lost reports
@@ -639,7 +638,7 @@ foreach ($foundReports as $found) {
 }*/
 
 // Go through every found report.
-while ($found = $foundResult->fetch_assoc()) {
+foreach ($foundReports as $found) {
 
     // Store the highest matching score for this found report.
     $highestScore = 0;
@@ -652,14 +651,6 @@ while ($found = $foundResult->fetch_assoc()) {
 
         // Calculate the similarity score between the two reports.
         $score = calculateMatchScore($lost, $found);
-        // TEMPORARY DEBUGGING
-            echo "<pre>";
-
-            echo "Lost Item: " . $lost['ItemName'] . "\n";
-            echo "Found Item: " . $found['ItemName'] . "\n";
-            echo "Matching Score: " . $score . "%\n";
-
-            echo "</pre>";
 
         // Check whether the score reaches the minimum 60% threshold.
         if ($score >= 60) {
@@ -692,7 +683,7 @@ while ($found = $foundResult->fetch_assoc()) {
             "ItemName" => $found["ItemName"],
             "CategoryName" => $found["CategoryName"],
             "Location" => $found["Location"],
-            "DateOccured" => $found["DateOccured"],
+            "DateOccured" => $found["DateOccurred"],
             "ImageLink" => $found["ImageLink"],
             "MatchScore" => $highestScore,
             "MatchLevel" => $matchLevel
@@ -774,7 +765,9 @@ $conn->close();
 
             <!-- Display the website name. -->
             <a class="navbar-brand fw-bold" href="index.php">
-                UbdFind
+                <img src="\UBfounD\assets\images\ubfound-logo-version3d.png" 
+                alt="UBfounD Logo" 
+                class="navbar-logo">
             </a>
 
             <!-- Button for opening the navigation menu on smaller screens. -->
@@ -970,8 +963,8 @@ $conn->close();
 
                                     <?php
                                     // Format the date for easier reading.
-                                    echo !empty($match["DateOccured"])
-                                        ? htmlspecialchars(date("d M Y", strtotime($match["DateOccured"])))
+                                    echo !empty($match["DateOccurred"])
+                                        ? htmlspecialchars(date("d M Y", strtotime($match["DateOccurred"])))
                                         : "Not Available";
                                     ?>
 
@@ -1005,8 +998,7 @@ $conn->close();
 
                                     <!-- View Details will be connected later. -->
                                     <a
-                                        href="#"
-                                        onclick="return false;"
+                                        href="item-details.php?id=<?php echo (int)$match['ReportID']; ?>"
                                         class="btn btn-primary"
                                     >
                                         View Details
@@ -1059,11 +1051,11 @@ $conn->close();
     =================================================== -->
 
     <!-- Display the website footer. -->
-    <footer class="text-center py-4 mt-5 bg-light">
+    <footer class="py-2">
 
         <!-- Display the copyright information. -->
         <p class="mb-0 text-muted">
-            &copy; <?php echo date("Y"); ?> UbdFind. All Rights Reserved.
+            &copy; <?php echo date("Y"); ?> UBfounD. All Rights Reserved.
         </p>
 
     </footer>
