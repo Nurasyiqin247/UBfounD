@@ -242,19 +242,26 @@ body {
 footer {
     background-color: #17365d;
     color: white;
+    margin-top: 20px;
+    flex-shrink: 0;
     
 }
 
-html, body {
-    height: 100%;
+/* Footer links */
+html{
+    min-height: 100%;
 }
 
+/*Main body layout*/
 body {
     min-height: 100vh;
+    height: auto;
+    margin: 0;
     display: flex;
     flex-direction: column;
 }
 
+/* Make the main content area take up the remaining space */
 main {
     flex: 1;
 } 
@@ -266,6 +273,7 @@ main {
     background-color: #f4f7fb;
     min-height: 75vh;
     padding: 70px 0;
+    flex:1 0 auto;
 }
 
 /* Login card */
@@ -323,7 +331,7 @@ align-items: center;
 }
 
 /*Mobile view adjustments*/
-@media (max-width: 768px) {
+ @media (max-width: 768px) {
     .navbar-logo {
         height: 60px;
         width: auto;
@@ -334,4 +342,4 @@ align-items: center;
     .navbar{
         min-height: 75px;
     }
-}
+} 
