@@ -35,9 +35,11 @@ $sql = "UPDATE notification
 
 $stmt = $conn->prepare($sql);
 
+//check the statement preparation whether it is successful or not
 if (!$stmt) {
     die("SQL preparation failed.");
 }
+
 
 $stmt->bind_param("i", $userID);
 $stmt->execute();

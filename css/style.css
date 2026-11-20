@@ -242,7 +242,7 @@ body {
 footer {
     background-color: #17365d;
     color: white;
-    margin-top: auto;
+    
 }
 
 html, body {
@@ -257,7 +257,7 @@ body {
 
 main {
     flex: 1;
-}
+} 
 
 /* ==================== LOGIN PAGE ==================== */
 
@@ -322,7 +322,7 @@ display: flex;
 align-items: center; 
 }
 
-/*Mobile version*/
+/*Mobile view adjustments*/
 @media (max-width: 768px) {
     .navbar-logo {
         height: 60px;

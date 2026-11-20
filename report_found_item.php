@@ -699,7 +699,7 @@ $conn->close();
 
                                     <div class="form-text">
                                         These details come from your registered
-                                        UbdFind account.
+                                        UBfounD account.
                                     </div>
 
                                 </div>
