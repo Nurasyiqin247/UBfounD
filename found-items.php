@@ -169,11 +169,40 @@ $stmt->close();
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="profile.php">
-                            Profile
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center gap-2"
+                                    href="profile.php">
+
+                                    <?php if (
+                                    !empty($navProfilePicture) &&
+                                    file_exists(__DIR__ . "/" . $navProfilePicture)
+                                    ): ?>
+
+                                    <img
+                                        src="<?php echo safeOutput($navProfilePicture); ?>"
+                                        alt="Profile Picture"
+                                        class="rounded-circle"
+                                        width="35"
+                                        height="35"
+                                        style="object-fit: cover;"
+                                    >
+
+                                    <?php else: ?>
+
+                                    <span
+                                        class="rounded-circle bg-light d-inline-flex
+                                            align-items-center justify-content-center"
+                                        style="width: 35px; height: 35px;"
+                                    >
+                                        👤
+                                    </span>
+
+                                    <?php endif; ?>
+
+                                 
+
+                           </a>
+                     </li>
 
                 </ul>
             </div>

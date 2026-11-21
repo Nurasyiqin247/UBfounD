@@ -501,41 +501,68 @@ $conn->close();
                 <!-- Align the navigation links to the right. -->
                 <ul class="navbar-nav ms-auto">
 
-                    <!-- Link to the home page. -->
-                    <li class="nav-item">
+                        <!-- Link to the home page. -->
+                        <li class="nav-item">
                         <a class="nav-link" href="index.php">Home</a>
-                    </li>
+                        </li>
 
-                    <!-- Link to the lost items page. -->
-                    <li class="nav-item">
+                        <!-- Link to the lost items page. -->
+                        <li class="nav-item">
                         <a class="nav-link" href="lost-items.php">Lost Items</a>
-                    </li>
+                        </li>
 
-                    <!-- Link to the found items page. -->
-                    <li class="nav-item">
+                        <!-- Link to the found items page. -->
+                        <li class="nav-item">
                         <a class="nav-link" href="found-items.php">Found Items</a>
-                    </li>
+                        </li>
 
-                    <!-- Link to the user's reports page. -->
-                    <li class="nav-item">
+                        <!-- Link to the user's reports page. -->
+                        <li class="nav-item">
                         <a class="nav-link" href="my_reports.php">My Reports</a>
-                    </li>
+                        </li>
 
-                    <!-- Highlight Matches because this is the current page. -->
-                    <li class="nav-item">
+                        <!-- Highlight Matches because this is the current page. -->
+                        <li class="nav-item">
                         <a class="nav-link active" href="matches.php">Matches</a>
-                    </li>
+                        </li>
 
-                    <!-- Link to the notifications page. -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="notifications.php">Notifications</a>
-                    </li>
+                        <li class="nav-item">
+                         <a  class="nav-link notification-bell" href="notifications.php" aria-label="Notifications">
+                            🔔
+                         </a>
+                        </li>
 
-                    <!-- Link to the user's profile page. -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="profile.php">Profile</a>
-                    </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center gap-2"
+                                    href="profile.php">
 
+                                    <?php if (
+                                    !empty($navProfilePicture) &&
+                                    file_exists(__DIR__ . "/" . $navProfilePicture)
+                                    ): ?>
+
+                                    <img
+                                        src="<?php echo safeOutput($navProfilePicture); ?>"
+                                        alt="Profile Picture"
+                                        class="rounded-circle"
+                                        width="35"
+                                        height="35"
+                                        style="object-fit: cover;"
+                                    >
+
+                                    <?php else: ?>
+
+                                    <span
+                                        class="rounded-circle bg-light d-inline-flex
+                                            align-items-center justify-content-center"
+                                        style="width: 35px; height: 35px;"
+                                    >
+                                        👤
+                                    </span>
+
+                                    <?php endif; ?>
+                                </a>
+                            </li>
                 </ul>
 
             </div>

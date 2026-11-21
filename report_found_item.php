@@ -322,7 +322,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Report Found Item - UbdFind</title>
+    <title>Report Found Item | UBfounD</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -358,6 +358,9 @@ $conn->close();
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.php">Home</a>
+                    </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="lost-items.php">Lost Items</a>
@@ -375,14 +378,50 @@ $conn->close();
                         <a class="nav-link" href="matches.html">Matches</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link notification-bell"
-                            href="notifications.html">🔔</a>
+                    <<li class="nav-item">
+                        <a
+                            class="nav-link notification-bell"
+                            href="notifications.php"
+                            aria-label="Notifications"
+                        >
+                            🔔
+                        </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="profile.html">Profile</a>
-                    </li>
+                        <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center gap-2"
+                                    href="profile.php">
+
+                                    <?php if (
+                                    !empty($navProfilePicture) &&
+                                    file_exists(__DIR__ . "/" . $navProfilePicture)
+                                    ): ?>
+
+                                    <img
+                                        src="<?php echo safeOutput($navProfilePicture); ?>"
+                                        alt="Profile Picture"
+                                        class="rounded-circle"
+                                        width="35"
+                                        height="35"
+                                        style="object-fit: cover;"
+                                    >
+
+                                    <?php else: ?>
+
+                                    <span
+                                        class="rounded-circle bg-light d-inline-flex
+                                            align-items-center justify-content-center"
+                                        style="width: 35px; height: 35px;"
+                                    >
+                                        👤
+                                    </span>
+
+                                    <?php endif; ?>
+
+                                 
+
+                           </a>
+                     </li>
 
                 </ul>
             </div>
