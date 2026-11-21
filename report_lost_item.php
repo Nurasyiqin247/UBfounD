@@ -390,6 +390,11 @@ function escapeHtml($value) {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
 
+                    <!-- Link to the home page. -->
+                    <li class="nav-item">
+                       <a class="nav-link" href="index.php">Home</a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="lost-items.php">Lost Items</a>
                     </li>
@@ -417,14 +422,13 @@ function escapeHtml($value) {
                         </a>
                     </li>
 
-                        <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2"
-                                    href="profile.php">
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2" href="profile.php">
 
-                                    <?php if (
+                              <?php if (
                                     !empty($navProfilePicture) &&
                                     file_exists(__DIR__ . "/" . $navProfilePicture)
-                                    ): ?>
+                                   ): ?>
 
                                     <img
                                         src="<?php echo safeOutput($navProfilePicture); ?>"
@@ -445,12 +449,11 @@ function escapeHtml($value) {
                                         👤
                                     </span>
 
-                                    <?php endif; ?>
 
-                                 
+                                <?php endif; ?>
 
-                           </a>
-                     </li>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

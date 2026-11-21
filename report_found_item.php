@@ -358,8 +358,10 @@ $conn->close();
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+
+                    <!-- Link to the home page. -->
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.php">Home</a>
+                       <a class="nav-link" href="index.php">Home</a>
                     </li>
 
                     <li class="nav-item">
@@ -371,14 +373,15 @@ $conn->close();
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="myreports.php">My Reports</a>
+                        <a class="nav-link" href="my-reports.php">My Reports</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="matches.html">Matches</a>
+                        <!-- Corrected the Matches link. -->
+                        <a class="nav-link" href="matches.php">Matches</a>
                     </li>
 
-                    <<li class="nav-item">
+                    <li class="nav-item">
                         <a
                             class="nav-link notification-bell"
                             href="notifications.php"
@@ -388,14 +391,13 @@ $conn->close();
                         </a>
                     </li>
 
-                        <li class="nav-item">
-                                <a class="nav-link d-flex align-items-center gap-2"
-                                    href="profile.php">
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2" href="profile.php">
 
-                                    <?php if (
+                              <?php if (
                                     !empty($navProfilePicture) &&
                                     file_exists(__DIR__ . "/" . $navProfilePicture)
-                                    ): ?>
+                                   ): ?>
 
                                     <img
                                         src="<?php echo safeOutput($navProfilePicture); ?>"
@@ -416,18 +418,15 @@ $conn->close();
                                         👤
                                     </span>
 
-                                    <?php endif; ?>
 
-                                 
+                                <?php endif; ?>
 
-                           </a>
-                     </li>
-
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
-
 
     <!-- Hero Section -->
     <section class="hero-section py-5">
