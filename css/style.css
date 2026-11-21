@@ -245,35 +245,81 @@ footer {
     margin-top: 20px;
     flex-shrink: 0;
     
+    
 }
 
-/* Footer links */
-html{
-    min-height: 100%;
-}
+/* ==================== MATCHES AND NOTIFICATIONS PAGE ==================== */
 
-/*Main body layout*/
-body {
+/* Matches and notifications page layout */
+.matches-page,
+.notifications-page {
     min-height: 100vh;
-    height: auto;
-    margin: 0;
     display: flex;
     flex-direction: column;
 }
 
-/* Make the main content area take up the remaining space */
-main {
-    flex: 1;
-} 
+/* Allow the main content to fill the available space */
+.matches-page main,
+.notifications-page main {
+    flex: 1 0 auto;
+}
+
+/* Keep navbar and footer in their normal positions */
+.matches-page .navbar,
+.notifications-page .navbar,
+.matches-page .footer,
+.notifications-page .footer {
+    flex-shrink: 0;
+}
+
+.matches-page footer,
+.notifications-page footer {
+    margin-top: 0;
+}
+
+
+
+
+
+/* ==================== REGISTER PAGE ==================== */
+
+/* Registration page layout only */
+.register-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Allow registration section to expand */
+.register-page .login-section {
+    flex: 1 0 auto;
+}
+
+/* Keep registration footer below the form */
+.register-page footer {
+    flex-shrink: 0;
+    margin-top: 0;
+}
 
 /* ==================== LOGIN PAGE ==================== */
+
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
 /* Login section */
 .login-section {
     background-color: #f4f7fb;
     min-height: 75vh;
     padding: 70px 0;
-    flex:1 0 auto;
+    flex: auto;
+}
+
+.login-page footer {
+    margin-top: 0;
+    flex-shrink: 0;
 }
 
 /* Login card */

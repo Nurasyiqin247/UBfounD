@@ -329,31 +329,31 @@ $stmt->close();
 
 // ==========================================
 // COUNT ITEMS RETURNED
-// ==========================================
+//==========================================
 
 // Assumption: Returned is the status used
 // when an item has been successfully returned.
 
-$sql = "SELECT COUNT(*) AS total
+ $sql = "SELECT COUNT(*) AS total
         FROM `item_report`
         WHERE `UserID` = ?
-        AND `Status` = 'Returned'";
+         AND `Status` = 'Returned'";
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userID);
-$stmt->execute();
+ $stmt = $conn->prepare($sql);
+ $stmt->bind_param("i", $userID);
+ $stmt->execute();
 
-$result = $stmt->get_result();
-$returnedData = $result->fetch_assoc();
+ $result = $stmt->get_result();
+ $returnedData = $result->fetch_assoc();
 
-$totalReturned = $returnedData["total"];
+ $totalReturned = $returnedData["total"];
 
-$stmt->close();
+ $stmt->close();
 
-// Escape output before displaying it in HTML
+ //Escape output before displaying it in HTML
 function safeOutput($value) {
     return htmlspecialchars($value ?? "", ENT_QUOTES, "UTF-8");
-}
+ }
 
 ?>
 
@@ -366,7 +366,7 @@ function safeOutput($value) {
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Profile - UbdFind</title>
+    <title>Profile | UBfounD</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -560,11 +560,11 @@ function safeOutput($value) {
                                         name="upload_picture"
                                         class="btn btn-outline-primary btn-sm"
                                     >
-                                        <i class="bi bi-camera"></i>
+                                        <i class="bi bi-camera mt-2"></i>
                                         Upload Picture
                                     </button>
 
-                                    <p class="text-muted small mt-2">
+                                    <p class="text-muted small mt-3">
                                         JPG or PNG only. Maximum size: 2 MB.
                                     </p>
 
@@ -579,22 +579,41 @@ function safeOutput($value) {
                             </p>
 
                             <p class="text-muted">
-                                Universiti Brunei Darussalam
+                                Universiti Brunei Darussalam 
                             </p>
 
                             <hr>
 
                             <!-- Display total reports -->
                             <p class="mb-1">
-                                <strong>Reports:</strong>
+                                <strong> Total Reports:</strong>
                                 <?php echo $totalReports; ?>
                             </p>
 
-                            <!-- Display returned items -->
+                            <!-- Display returned items
                             <p class="mb-0">
                                 <strong>Items Returned:</strong>
                                 <?php echo $totalReturned; ?>
-                            </p>
+                            </p> -->
+
+                                <p class="mb-0 mt-4">
+                                    <!-- ====================LOG OUT BUTTON ==================== -->
+    
+                                    <form method="POST" action="logout.php"
+                                        onsubmit="return confirm('Are you sure you want to log out?');">
+
+                                        <input
+                                            type="hidden"
+                                                name="csrf_token"
+                                                    value="<?php echo safeOutput($_SESSION['csrf_token']); ?>"
+                                            >                   
+
+                                            <button type="submit" class="btn btn-danger">
+                                                Log Out
+                                            </button>
+
+                                    </form>
+                                </p>
 
                         </div>
 
@@ -762,23 +781,7 @@ function safeOutput($value) {
                                 </span>
 
                             </div>
-                            <hr class="my-4">
-                            <!-- ====================LOG OUT BUTTON ==================== -->
-    
-                                <form method="POST" action="logout.php"
-                                    onsubmit="return confirm('Are you sure you want to log out?');">
-
-                                    <input
-                                        type="hidden"
-                                            name="csrf_token"
-                                                value="<?php echo safeOutput($_SESSION['csrf_token']); ?>"
-                                        >                   
-
-                                    <button type="submit" class="btn btn-danger">
-                                        Log Out
-                                 </button>
-
-                            </form>
+                                
 
                         </div>
 

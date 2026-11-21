@@ -77,7 +77,7 @@ foreach ($notifications as $notification) {
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Notifications - UbfounD</title>
+    <title>Notifications | UbfounD</title>
 
     <!-- Bootstrap CSS -->
     <link
@@ -91,7 +91,7 @@ foreach ($notifications as $notification) {
 </head>
 
 
-<body>
+<body class="notifications-page">
 
 
     <!-- ==================== NAVBAR ==================== -->
@@ -193,7 +193,7 @@ foreach ($notifications as $notification) {
     </nav>
 
 
-
+ 
     <!-- ==================== PAGE HEADER ==================== -->
 
     <section class="py-5">
@@ -213,131 +213,132 @@ foreach ($notifications as $notification) {
     </section>
     
 <!-- ==================== NOTIFICATIONS ==================== -->
+ <main class="flex-grow-1"> 
+        <section class="pb-5">
 
-<section class="pb-5">
+            <div class="container">
 
-    <div class="container">
+                <div class="row justify-content-center">
 
-        <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <!-- Mark All as Read button -->
+                            <div class="text-end mb-3">
 
-            <div class="col-lg-8">
-                <!-- Mark All as Read button -->
-                    <div class="text-end mb-3">
+                                <form action="mark_all_notifications_read.php"
+                                    method="POST">
 
-                        <form action="mark_all_notifications_read.php"
-                            method="POST">
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-primary"
+                                    <?= $unreadCount === 0 ? 'disabled' : '' ?>
+                                    >
+                                Mark All as Read
+                                </button>
 
-                        <button
-                            type="submit"
-                            class="btn btn-outline-primary"
-                            <?= $unreadCount === 0 ? 'disabled' : '' ?>
-                            >
-                         Mark All as Read
-                        </button>
-
-                        </form>
-
-                    </div>
-
-                <?php if (!empty($notifications)): ?>
-
-                    <?php foreach ($notifications as $notification): ?>
-
-                        <div class="card mb-3 shadow-sm">
-
-                            <div class="card-body">
-
-                                <div class="d-flex align-items-start">
-
-                                    <!-- Notification icon -->
-                                    <div class="me-3 fs-4">
-                                        🔔
-                                    </div>
-
-                                    <div class="flex-grow-1">
-
-                                        <!-- Notification message -->
-                                        <p class="mb-2">
-                                            <?= e($notification['NotificationMessage']) ?>
-                                        </p>
-
-                                        <!-- Notification date -->
-                                        <small class="text-muted">
-                                            <?= e(date(
-                                                'd M Y, h:i A',
-                                                strtotime($notification['DateCreated'])
-                                            )) ?>
-                                        </small>
-
-                                        <!-- Read / Unread status -->
-                                        <?php if ((int)$notification['IsRead'] === 0): ?>
-
-                                            <form action="mark_notification_read.php"
-                                                 method="POST"
-                                                    class="mt-2">
-
-                                                    <input type="hidden"
-                                                            name="notification_id"
-                                                                value="<?= (int)$notification['NotificationID'] ?>">
-
-                                                            <button type="submit"
-                                                                class="btn btn-sm btn-outline-primary">
-
-                                                                    Mark as Read
-
-                                                            </button>
-
-                                                            </form>
-
-                                                            <?php else: ?>
-
-                                                    <span class="badge bg-secondary">
-                                                    Read
-                                                </span>
-
-                                            <?php endif; ?>
-                                         
-                                                
-                                                
-                                        </div>
-
-                                </div>
+                                </form>
 
                             </div>
 
-                        </div>
+                        <?php if (!empty($notifications)): ?>
 
-                    <?php endforeach; ?>
+                            <?php foreach ($notifications as $notification): ?>
 
-                <?php else: ?>
-                    
+                                <div class="card mb-3 shadow-sm">
 
-                    <!-- Empty notification message -->
-                    <div class="text-center py-5">
+                                    <div class="card-body">
 
-                        <div class="fs-1 mb-3">
-                            🔔
-                        </div>
+                                        <div class="d-flex align-items-start">
 
-                        <h5 class="fw-bold">
-                            No Notifications Yet
-                        </h5>
+                                            <!-- Notification icon -->
+                                            <div class="me-3 fs-4">
+                                                🔔
+                                            </div>
 
-                        <p class="text-muted">
-                            You will see updates about your lost and found items here.
-                        </p>
+                                            <div class="flex-grow-1">
+
+                                                <!-- Notification message -->
+                                                <p class="mb-2">
+                                                    <?= e($notification['NotificationMessage']) ?>
+                                                </p>
+
+                                                <!-- Notification date -->
+                                                <small class="text-muted">
+                                                    <?= e(date(
+                                                        'd M Y, h:i A',
+                                                        strtotime($notification['DateCreated'])
+                                                    )) ?>
+                                                </small>
+
+                                                <!-- Read / Unread status -->
+                                                <?php if ((int)$notification['IsRead'] === 0): ?>
+
+                                                    <form action="mark_notification_read.php"
+                                                        method="POST"
+                                                            class="mt-2">
+
+                                                            <input type="hidden"
+                                                                    name="notification_id"
+                                                                        value="<?= (int)$notification['NotificationID'] ?>">
+
+                                                                    <button type="submit"
+                                                                        class="btn btn-sm btn-outline-primary">
+
+                                                                            Mark as Read
+
+                                                                    </button>
+
+                                                                    </form>
+
+                                                                    <?php else: ?>
+
+                                                            <span class="badge bg-secondary">
+                                                            Read
+                                                        </span>
+
+                                                    <?php endif; ?>
+                                                
+                                                        
+                                                        
+                                                </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            <?php endforeach; ?>
+
+                        <?php else: ?>
+                            
+
+                            <!-- Empty notification message -->
+                            <div class="text-center py-5">
+
+                                <div class="fs-1 mb-3">
+                                    🔔
+                                </div>
+
+                                <h5 class="fw-bold">
+                                    No Notifications Yet
+                                </h5>
+
+                                <p class="text-muted">
+                                    You will see updates about your lost and found items here.
+                                </p>
+
+                            </div>
+
+                        <?php endif; ?>
 
                     </div>
 
-                <?php endif; ?>
+                </div>
 
             </div>
 
-        </div>
-
-    </div>
-
-</section>
+        </section>
+    </main>
 
 
     <!-- ==================== FOOTER ==================== -->
