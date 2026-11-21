@@ -1,6 +1,4 @@
 <?php
-
-
 // Connect to the database
 $conn = new mysqli(
     "localhost",
@@ -493,7 +491,7 @@ foreach ($lostReports as $lost) {
                 </p>
             </div>
 
-            <a href="lost-items.php" class="btn btn-outline-primary">
+            <a href="recent-reports.php" class="btn btn-outline-primary">
                 View All
             </a>
 
