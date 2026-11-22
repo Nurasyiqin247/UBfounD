@@ -11,9 +11,17 @@ try {
         4406
     );
 
+     include __DIR__ . "/get-profile-picture.php";
+
     $conn->set_charset("utf8mb4");
 
-    include __DIR__ . "/get-profile-picture.php";
+    // Set the character set to UTF-8
+    function e($value){
+    return htmlspecialchars((string) ($value ??''),
+    ENT_QUOTES, 
+    'UTF-8'
+    );
+}
 
     // Display lost items only.
     $reportType = "LOST";

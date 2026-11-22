@@ -365,7 +365,7 @@ foreach ($lostReports as $lost) {
                     <h1 class="display-5 fw-bold">
                         Lost something on campus?
                         <br>
-                        Find it here at UBfound.
+                        Find it here at UBfounD.
                     </h1>
                     
 

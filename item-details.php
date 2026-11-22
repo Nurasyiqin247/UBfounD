@@ -14,6 +14,14 @@ $conn->set_charset("utf8mb4");
 // Retrieve the logged-in user's profile picture
 require_once __DIR__ . "/get-profile-picture.php";
 
+// Set the character set to UTF-8
+function e($value){
+    return htmlspecialchars((string) ($value ??''),
+    ENT_QUOTES, 
+    'UTF-8'
+    );
+}
+
 // Check database connection.
 if ($conn->connect_error) {
     error_log("Database connection failed: " . $conn->connect_error);
@@ -179,7 +187,7 @@ $conn->close();
                                     ): ?>
 
                                     <img
-                                        src="<?php echo safeOutput($navProfilePicture); ?>"
+                                        src="<?php echo e($navProfilePicture); ?>"
                                         alt="Profile Picture"
                                         class="rounded-circle"
                                         width="35"
