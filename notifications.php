@@ -23,8 +23,12 @@ if ($conn->connect_error) {
     die("Database connection failed.");
 }
 
+
 // Set character encoding
 $conn->set_charset("utf8mb4");
+
+// Retrieve the logged-in user's profile picture
+require_once __DIR__ . "/get-profile-picture.php";
 
 // Helper function to protect displayed text
 function e($value) {
@@ -125,65 +129,76 @@ foreach ($notifications as $notification) {
             <!-- Navigation links -->
             <div class="collapse navbar-collapse" id="navbarNav">
 
-                <ul class="navbar-nav ms-auto">
+                < <ul class="navbar-nav ms-auto">
 
+                <li class="nav-item">
+                    <a class="nav-link" href="index.php">Home</a>
+                </li>
 
-                    <!-- Home -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">
-                            Home
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="lost-items.php">Lost Items</a>
+                </li>
 
-
-                    <!-- Lost Items -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="lost-items.php">
-                            Lost Items
-                        </a>
-                    </li>
-
-
-                    <!-- Found Items -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="found-items.php">
-                            Found Items
-                        </a>
-                    </li>
-
-
-                    <!-- My Reports -->
+                <li class="nav-item">
+                    <a class="nav-link" href="found-items.php">Found Items</a>
+                </li>
+                
                     <li class="nav-item">
                         <a class="nav-link" href="my-reports.php">
                             My Reports
                         </a>
                     </li>
 
-
-                    <!-- Matches -->
                     <li class="nav-item">
                         <a class="nav-link" href="matches.php">
                             Matches
                         </a>
                     </li>
 
-
-                    <!-- Notification bell -->
                     <li class="nav-item">
-                        <a class="nav-link" href="notifications.php">
+                        <a
+                            class="nav-link notification-bell"
+                            href="notifications.php"
+                            aria-label="Notifications"
+                        >
                             🔔
                         </a>
                     </li>
 
+                        <li class="nav-item">
+                                <a class="nav-link d-flex align-items-center gap-2"
+                                    href="profile.php">
 
-                    <!-- Profile -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="profile.php">
-                            Profile
-                        </a>
-                    </li>
+                                    <?php if (
+                                    !empty($navProfilePicture) &&
+                                    file_exists(__DIR__ . "/" . $navProfilePicture)
+                                    ): ?>
 
+                                    <img
+                                        src="<?php echo safeOutput($navProfilePicture); ?>"
+                                        alt="Profile Picture"
+                                        class="rounded-circle"
+                                        width="35"
+                                        height="35"
+                                        style="object-fit: cover;"
+                                    >
 
+                                    <?php else: ?>
+
+                                    <span
+                                        class="rounded-circle bg-light d-inline-flex
+                                            align-items-center justify-content-center"
+                                        style="width: 35px; height: 35px;"
+                                    >
+                                        👤
+                                    </span>
+
+                                    <?php endif; ?>
+
+                                 
+
+                           </a>
+                     </li>
                 </ul>
 
             </div>

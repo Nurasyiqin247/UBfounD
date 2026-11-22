@@ -11,6 +11,9 @@ $conn = new mysqli(
 
 $conn->set_charset("utf8mb4");
 
+// Retrieve the logged-in user's profile picture
+require_once __DIR__ . "/get-profile-picture.php";
+
 // Check database connection.
 if ($conn->connect_error) {
     error_log("Database connection failed: " . $conn->connect_error);

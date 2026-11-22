@@ -37,6 +37,9 @@ if ($conn->connect_error) {
 // Set character encoding
 $conn->set_charset("utf8mb4");
 
+// Retrieve the logged-in user's profile picture
+require_once __DIR__ . "/get-profile-picture.php";
+
 // Get the logged-in user's ID
 $userID = $_SESSION["user_id"];
 

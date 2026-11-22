@@ -15,7 +15,11 @@ if ($conn->connect_error) {
     exit("Database connection failed. Please try again later.");
 }
 
-include __DIR__ . "/get-profile-picture.php";
+// 5. Set the character encoding
+$conn->set_charset("utf8mb4");
+
+// Retrieve the logged-in user's profile picture
+require_once __DIR__ . "/get-profile-picture.php";
 
 // Set the character set to UTF-8
 function e($value){

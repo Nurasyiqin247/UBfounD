@@ -25,6 +25,9 @@ if ($conn->connect_error) {
 // 5. Set the character encoding
 $conn->set_charset("utf8mb4");
 
+// Retrieve the logged-in user's profile picture
+require_once __DIR__ . "/get-profile-picture.php";
+
 // 6. Helper function to safely display text
 function e($value) {
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
@@ -265,13 +268,13 @@ $conn->close();
                                 <?php if (strtolower($report["ReportType"]) === "lost"): ?>
 
                                     <span class="badge bg-danger mb-2">
-                                        Lost Item
+                                        LOST
                                     </span>
 
                                 <?php else: ?>
 
                                     <span class="badge bg-success mb-2">
-                                        Found Item
+                                        FOUND
                                     </span>
 
                                 <?php endif; ?>
