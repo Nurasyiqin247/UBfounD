@@ -188,7 +188,7 @@ try {
                                     ): ?>
 
                                     <img
-                                        src="<?php echo safeOutput($navProfilePicture); ?>"
+                                        src="<?php echo e($navProfilePicture); ?>"
                                         alt="Profile Picture"
                                         class="rounded-circle"
                                         width="35"

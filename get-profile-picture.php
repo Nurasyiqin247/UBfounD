@@ -1,12 +1,22 @@
 
+
 <?php
 
-$navProfilePicture = "";
+// Start the session only if it has not started yet
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
+// Default value when no profile picture is available
+$navProfilePicture = null;
+
+// Check whether the user is logged in
 if (isset($_SESSION["user_id"])) {
 
-    $userID = $_SESSION["user_id"];
+    // Get the logged-in user's ID
+    $userID = (int) $_SESSION["user_id"];
 
+    // Retrieve the profile picture from the database
     $sql = "SELECT ProfilePicture
             FROM `USER`
             WHERE UserID = ?";
@@ -21,7 +31,10 @@ if (isset($_SESSION["user_id"])) {
         $result = $stmt->get_result();
         $userPicture = $result->fetch_assoc();
 
-        $navProfilePicture = $userPicture["ProfilePicture"] ?? "";
+        // Store the picture path
+        if (!empty($userPicture["ProfilePicture"])) {
+            $navProfilePicture = $userPicture["ProfilePicture"];
+        }
 
         $stmt->close();
     }

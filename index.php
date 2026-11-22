@@ -1,4 +1,11 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+//Start session
+session_start();
+
 // Connect to the database
 $conn = new mysqli(
     "localhost",
@@ -7,6 +14,9 @@ $conn = new mysqli(
     "lostandfound",
     4406
 );
+
+// Include the profile picture helper
+require_once __DIR__ . "/get-profile-picture.php";
 
 // Check database connection
 if ($conn->connect_error) {
@@ -17,9 +27,6 @@ if ($conn->connect_error) {
 
 // 5. Set the character encoding
 $conn->set_charset("utf8mb4");
-
-// Retrieve the logged-in user's profile picture
-require_once __DIR__ . "/get-profile-picture.php";
 
 // Set the character set to UTF-8
 function e($value){
@@ -305,7 +312,7 @@ foreach ($lostReports as $lost) {
                                     ): ?>
 
                                     <img
-                                        src="<?php echo safeOutput($navProfilePicture); ?>"
+                                        src="<?php echo e($navProfilePicture); ?>"
                                         alt="Profile Picture"
                                         class="rounded-circle"
                                         width="35"
