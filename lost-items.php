@@ -165,7 +165,7 @@ try {
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="my-reports.html">
+                        <a class="nav-link" href="my-reports.php">
                             My Reports
                         </a>
                     </li>

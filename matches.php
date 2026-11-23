@@ -800,13 +800,40 @@ $conn->close();
     =================================================== -->
 
     <!-- FOOTER -->
-    <footer class="py-3 text-center">
+    <footer class="py-2">
+
         <div class="container text-center">
-            <p class="mb-0">
-                &copy; 2026 UBFounD - Campus Lost & Found System
+
+            <p class="fw-bold mb-1">
+                UBfounD
             </p>
+
+            <p class="small mb-1">
+                Campus Lost &amp; Found System
+            </p>
+
+            <p class="small mb-1">
+                Need help?
+            </p>
+
+            <p class="small mb-1">
+                Email:
+                <a href="mailto:lostandfound@university.edu">
+                    <u>ubfound@ubd.edu.bn</u>
+                </a>
+            </p>
+
+            <p class="small mb-2">
+                Phone: +673 246 XXXX
+            </p>
+
+            <p class="small mb-0">
+                &copy; 2026 UBfounD. Helping UBD students return found items.
+            </p>
+
         </div>
     </footer>
+
 
 
     <!-- Import Bootstrap JavaScript for the responsive navigation menu. -->

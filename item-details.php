@@ -86,9 +86,6 @@ if ($result->num_rows === 0) {
 
 $item = $result->fetch_assoc();
 
-function e($value) {
-    return htmlspecialchars((string)($value ?? ""), ENT_QUOTES, 'UTF-8');
-}
 
 $reportedDate = !empty($item['DateReported'])
     ? date("d F, Y", strtotime($item['DateReported']))
